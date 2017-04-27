@@ -133,7 +133,7 @@ public class ReminderCommandListener extends ListenerAdapter {
 						TextChannel chan = event.getGuild().getTextChannelById(command[1]);
 						if(chan == null)
 							return;
-						DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy-h:mma-z");
+						DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy h:mma z");
 						String strDate = command[2] + " " + command[3] + " " + command[4];
 						Date date = dateFormat.parse(strDate);
 						// starting second sunday in march, ending first sunday november
