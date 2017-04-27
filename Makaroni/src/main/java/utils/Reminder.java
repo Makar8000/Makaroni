@@ -20,23 +20,26 @@ public class Reminder {
 	private User user;
 	private String msg;
 	private boolean all;
+	private String id;
 
-	public Reminder(long epoch, TextChannel channel, User user, String msg) {
+	public Reminder(long epoch, TextChannel channel, User user, String msg, String id) {
 		scheduler = Executors.newScheduledThreadPool(1);
 		this.epoch = epoch;
 		this.channel = channel;
 		this.user = user;
 		this.msg = msg;
 		this.all = false;
+		this.id = id;
 	}
 
-	public Reminder(long epoch, TextChannel channel, User user, String msg, boolean all) {
+	public Reminder(long epoch, TextChannel channel, User user, String msg, String id, boolean all) {
 		scheduler = Executors.newScheduledThreadPool(1);
 		this.epoch = epoch;
 		this.channel = channel;
 		this.user = user;
 		this.msg = msg;
 		this.all = all;
+		this.id = id;
 	}
 
 	public boolean schedule() {
@@ -75,6 +78,10 @@ public class Reminder {
 	public String getMsg() {
 		return msg;
 	}
+	
+	public String getId() {
+		return id;
+	}
 
 	public long getEpoch() {
 		return epoch;
@@ -86,7 +93,9 @@ public class Reminder {
 	}
 	
 	public String toString() {
-		StringBuilder ret = new StringBuilder(getTime());
+		StringBuilder ret = new StringBuilder(getId());
+		ret.append(" : ");
+		ret.append(getTime());
 		ret.append(" : ");
 		ret.append(getMsg());
 		return ret.toString();

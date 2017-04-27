@@ -4,6 +4,7 @@ import java.nio.file.Files;
 import audio.AudioPlayerListener;
 import commands.AdminCommandListener;
 import commands.GuildCommandListener;
+import commands.ReminderCommandListener;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
@@ -15,6 +16,7 @@ public class Makaroni {
 		jda.addEventListener(new AudioPlayerListener());
 		jda.addEventListener(new GuildCommandListener());
 		jda.addEventListener(new AdminCommandListener());
+		jda.addEventListener(new ReminderCommandListener());
 		jda.getPresence().setGame(Game.of("with kittens"));
 	}
 
