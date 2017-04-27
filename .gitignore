@@ -8,8 +8,23 @@
 *.war
 *.ear
 
-# Bot Token #
+# project files
+config.json
+tokens.json
 *.tok
+src/test/
+
+# music files
+*.mp3
+*.aac
+*.m4a
+*.wav
+*.flac
+*.ogg
+
+# gradle
+/build/
+/.gradle/
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
