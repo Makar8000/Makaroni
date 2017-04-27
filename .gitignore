@@ -9,6 +9,7 @@
 *.ear
 
 # project files
+/Makaroni/.settings/
 config.json
 tokens.json
 *.tok
