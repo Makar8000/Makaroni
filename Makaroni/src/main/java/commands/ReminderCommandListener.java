@@ -55,7 +55,7 @@ public class ReminderCommandListener extends ListenerAdapter {
 						long time = date.getTime() - (1000 * 60 * 60);
 						Reminder remind = new Reminder(time, event.getChannel(), event.getAuthor(), command[4], event.getMessageId());
 						reminders.add(event.getMessageId(), remind);
-						event.getChannel().sendMessage("Added a reminder. Your reminder ID is " + event.getMessageId()).queue();
+						event.getChannel().sendMessage(remind.getEmbed()).queue();
 					} catch (ParseException e) {
 						event.getChannel().sendMessage("Invalid date format.\n Corrent Date format is `MM/dd/yyyy h:mma z`").queue();
 						return;
@@ -63,7 +63,7 @@ public class ReminderCommandListener extends ListenerAdapter {
 				} else if (command.length == 2 && command[1].equalsIgnoreCase("help")) {
 					String remsyntax = "Syntax for reminder command is as follows:\n";
 					remsyntax += "!remind [date] [time] [timezone] [msg]\n";
-					remsyntax += "\nExample:";
+					remsyntax += "\nExample:\n";
 					remsyntax += "!remind 4/30/2017 6:00PM CST make dinner!";
 					event.getChannel().sendMessage(remsyntax).queue();
 				}
@@ -130,7 +130,7 @@ public class ReminderCommandListener extends ListenerAdapter {
 				String[] command = event.getMessage().getContent().split(" ", 6);
 				if(command.length == 6) {
 					try {
-						TextChannel chan = event.getGuild().getTextChannelById(command[1]);
+						TextChannel chan = event.getGuild().getTextChannelsByName(command[1], true).get(0);
 						if(chan == null)
 							return;
 						DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy h:mma z");
@@ -140,7 +140,7 @@ public class ReminderCommandListener extends ListenerAdapter {
 						long time = date.getTime() - (1000 * 60 * 60);
 						Reminder remind = new Reminder(time, chan, event.getAuthor(), command[5], event.getMessageId(), true);
 						reminders.add(event.getMessageId(), remind);
-						event.getChannel().sendMessage("Added a reminder. Your reminder ID is " + event.getMessageId()).queue();
+						event.getChannel().sendMessage(remind.getEmbed()).queue();
 					} catch (NumberFormatException | ParseException ex) {
 						event.getChannel().sendMessage("Invalid reminder format.").queue();
 						return;

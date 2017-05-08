@@ -3,7 +3,6 @@ package utils;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
 import net.dv8tion.jda.core.entities.User;
 
 public class ReminderManager {
