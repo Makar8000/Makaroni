@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TimeZone;
 
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
@@ -51,8 +52,9 @@ public class ReminderCommandListener extends ListenerAdapter {
 						DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy h:mma z");
 						String strDate = command[1] + " " + command[2] + " " + command[3];
 						Date date = dateFormat.parse(strDate);
-						// starting second sunday in march, ending first sunday november
-						long time = date.getTime() - (1000 * 60 * 60);
+						long time = date.getTime(); 
+						if(TimeZone.getTimeZone(command[3]).inDaylightTime(date))
+							time -= (1000 * 60 * 60);
 						Reminder remind = new Reminder(time, event.getChannel(), event.getAuthor(), command[4], event.getMessageId());
 						reminders.add(event.getMessageId(), remind);
 						event.getChannel().sendMessage(remind.getEmbed()).queue();
