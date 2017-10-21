@@ -31,6 +31,7 @@ public class ReminderManager {
 
 	public ArrayList<Reminder> getAll(User u) {
 		ArrayList<Reminder> ret = new ArrayList<Reminder>();
+		reminders.entrySet().removeIf(r -> r.getValue().getEpoch() + 120000 < System.currentTimeMillis());
 		reminders.forEach((k, r) -> {
 			if (r.getUser().getId().equals(u.getId()))
 				ret.add(r);

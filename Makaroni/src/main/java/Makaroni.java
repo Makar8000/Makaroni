@@ -13,7 +13,7 @@ import net.dv8tion.jda.core.entities.Game;
 public class Makaroni {
 	public static void main(String[] args) throws Exception {
 		JDA jda = new JDABuilder(AccountType.BOT).setToken(getTok()).buildBlocking();
-		jda.addEventListener(new AudioPlayerListener());
+		//jda.addEventListener(new AudioPlayerListener());
 		jda.addEventListener(new GuildCommandListener());
 		jda.addEventListener(new AdminCommandListener());
 		jda.addEventListener(new ReminderCommandListener());

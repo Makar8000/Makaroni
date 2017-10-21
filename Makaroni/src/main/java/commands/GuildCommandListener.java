@@ -21,7 +21,7 @@ public class GuildCommandListener extends ListenerAdapter {
 	}
 
 	private void addCommands() {
-		addPingCommand();
+		//addPingCommand();
 		addPoopCommand();
 	}
 
