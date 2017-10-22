@@ -13,6 +13,7 @@
 config.json
 tokens.json
 *.tok
+*.dat
 src/test/
 
 # music files

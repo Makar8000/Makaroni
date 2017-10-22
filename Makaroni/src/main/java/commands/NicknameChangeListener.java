@@ -16,17 +16,18 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 public class NicknameChangeListener extends ListenerAdapter {
 	private final Map<Long, Long> nickChanges;
-	private final Map<Long, Long> backupChange;
 	private final String fileName = "nickchanges.dat";
 
 	public NicknameChangeListener() {
 		nickChanges = readFile(fileName);
-		backupChange = new HashMap<Long,Long>();
 	}
 
 
 	@Override
 	public void onGuildMemberNickChange(GuildMemberNickChangeEvent event) {
+		if(event.getGuild().getAuditLogs().getLast().getUser().getIdLong() != event.getUser().getIdLong())
+			return;
+		
 		long canadian = event.getGuild().getRolesByName("canadian", true).get(0).getIdLong();
 		if(event.getMember().getRoles().stream().anyMatch(r -> r.getIdLong() == canadian)) 
 			return;
@@ -35,7 +36,7 @@ public class NicknameChangeListener extends ListenerAdapter {
 			long timePassed = System.currentTimeMillis() - nickChanges.get(event.getUser().getIdLong()).longValue();
 			long daysPassed = timePassed / (1000 * 60 * 60 * 24);
 			
-			if(timePassed > 2000 && daysPassed < 7) {
+			if(daysPassed < 7) {
 				long canChangeTime = nickChanges.get(event.getUser().getIdLong()).longValue() + (1000 * 60 * 60 * 24 * 7);
 				SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy h:mma z");
 				String msg = "Sorry, but nickname changes in Canadaland are restricted to once a week. Please try again after ";
@@ -43,12 +44,7 @@ public class NicknameChangeListener extends ListenerAdapter {
 				msg += ".\n\n If you need an exception, please contact Makar.";
 
 				event.getUser().openPrivateChannel().complete().sendMessage(msg).complete();
-				backupChange.put(event.getUser().getIdLong(), nickChanges.get(event.getUser().getIdLong()));
-				nickChanges.put(event.getUser().getIdLong(), System.currentTimeMillis());
 				event.getGuild().getController().setNickname(event.getMember(), event.getPrevNick()).complete();
-			} else if (timePassed <= 2000 && backupChange.containsKey(event.getUser().getIdLong())) {
-				nickChanges.put(event.getUser().getIdLong(), backupChange.get(event.getUser().getIdLong()));
-				backupChange.remove(event.getUser().getIdLong());
 			} else {
 				nickChanges.put(event.getUser().getIdLong(), System.currentTimeMillis());
 			}
