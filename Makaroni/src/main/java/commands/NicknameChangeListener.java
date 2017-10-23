@@ -8,8 +8,10 @@ import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import net.dv8tion.jda.core.audit.AuditLogEntry;
 import net.dv8tion.jda.core.events.ShutdownEvent;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberNickChangeEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
@@ -25,9 +27,9 @@ public class NicknameChangeListener extends ListenerAdapter {
 
 	@Override
 	public void onGuildMemberNickChange(GuildMemberNickChangeEvent event) {
-		if(event.getGuild().getAuditLogs().getLast().getUser().getIdLong() != event.getUser().getIdLong())
+		if(event.getGuild().getAuditLogs().complete().get(0).getUser().getIdLong() != event.getUser().getIdLong()) 
 			return;
-		
+			
 		long canadian = event.getGuild().getRolesByName("canadian", true).get(0).getIdLong();
 		if(event.getMember().getRoles().stream().anyMatch(r -> r.getIdLong() == canadian)) 
 			return;
@@ -45,6 +47,7 @@ public class NicknameChangeListener extends ListenerAdapter {
 
 				event.getUser().openPrivateChannel().complete().sendMessage(msg).complete();
 				event.getGuild().getController().setNickname(event.getMember(), event.getPrevNick()).complete();
+
 			} else {
 				nickChanges.put(event.getUser().getIdLong(), System.currentTimeMillis());
 			}
