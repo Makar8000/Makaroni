@@ -55,7 +55,7 @@ public class GuildCommandListener extends ListenerAdapter {
 				
 				event.getMessage().delete().queue();
 				EmbedBuilder msg = new EmbedBuilder();
-				msg.setAuthor(event.getAuthor().getName(), null, event.getAuthor().getEffectiveAvatarUrl());
+				msg.setAuthor(event.getAuthor().getName() + " created a poll!", null, event.getAuthor().getEffectiveAvatarUrl());
 	    		msg.setTitle(params[0], null);
 	    		msg.setColor(Color.MAGENTA);
 	    		
