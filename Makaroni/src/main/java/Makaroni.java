@@ -1,7 +1,6 @@
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import audio.AudioPlayerListener;
 import commands.AdminCommandListener;
 import commands.GuildCommandListener;
 import commands.NicknameChangeListener;
@@ -10,6 +9,8 @@ import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.entities.Game;
+import news.AionFetcher;
+import utils.DiscordID;
 
 public class Makaroni {
 	public static void main(String[] args) throws Exception {
@@ -20,6 +21,16 @@ public class Makaroni {
 		jda.addEventListener(new NicknameChangeListener());
 		jda.addEventListener(new ReminderCommandListener());
 		jda.getPresence().setGame(Game.of("with kittens"));
+		
+		Thread t1 = new Thread(() -> {
+			AionFetcher.loopNews(jda.getTextChannelById(DiscordID.GAMING));
+		});
+		t1.start();
+		
+		Thread t2 = new Thread(() -> {
+			AionFetcher.loopPosts(jda.getTextChannelById(DiscordID.MAPLE_SYRUP));
+		});
+		t2.start();
 	}
 
 	private static String getTok() {

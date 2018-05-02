@@ -8,10 +8,8 @@ import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import net.dv8tion.jda.core.audit.AuditLogEntry;
 import net.dv8tion.jda.core.events.ShutdownEvent;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberNickChangeEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;

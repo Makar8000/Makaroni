@@ -1,20 +1,15 @@
 package commands;
 
 import java.awt.Color;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 
-import net.dv8tion.jda.client.managers.fields.EmoteField;
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.entities.impl.EmoteImpl;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
