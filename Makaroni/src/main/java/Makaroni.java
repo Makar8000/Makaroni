@@ -9,8 +9,7 @@ import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.entities.Game;
-import news.AionFetcher;
-import utils.DiscordID;
+import news.AionNotification;
 
 public class Makaroni {
 	public static void main(String[] args) throws Exception {
@@ -22,15 +21,7 @@ public class Makaroni {
 		jda.addEventListener(new ReminderCommandListener());
 		jda.getPresence().setGame(Game.of("with kittens"));
 		
-		Thread t1 = new Thread(() -> {
-			AionFetcher.loopNews(jda.getTextChannelById(DiscordID.GAMING));
-		});
-		t1.start();
-		
-		Thread t2 = new Thread(() -> {
-			AionFetcher.loopPosts(jda.getTextChannelById(DiscordID.MAPLE_SYRUP));
-		});
-		t2.start();
+		AionNotification.start(jda);
 	}
 
 	private static String getTok() {

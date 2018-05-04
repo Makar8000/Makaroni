@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class AionCache<T> implements Serializable {
 	private static final long serialVersionUID = 1041148093988831306L;
-	private static final int size = 10;
+	private static final int size = 40;
 	private final Map<Long, T> map;
 	private final Long[] keys;
 	private int nextLoc = 0;
