@@ -11,11 +11,12 @@ import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.core.events.user.UserOnlineStatusUpdateEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import utils.DiscordID;
 
 public class AdminCommandListener extends ListenerAdapter {
 	private final Map<String, GuildAction> commands;
-	private final String adminID = "85924030661533696";
 
 	public AdminCommandListener() {
 		commands = new HashMap<String, GuildAction>();
@@ -24,11 +25,22 @@ public class AdminCommandListener extends ListenerAdapter {
 
 	@Override
 	public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
-		if (!event.getAuthor().getId().equals(adminID))
+		if (!event.getAuthor().getId().equals(DiscordID.ADMIN_ID))
 			return;
 		String command = event.getMessage().getContent().split(" ", 2)[0].toLowerCase();
 		if (commands.containsKey(command))
 			commands.get(command).run(event);
+	}
+	
+	@Override
+	public void onUserOnlineStatusUpdate(UserOnlineStatusUpdateEvent event) {
+		if(event.getUser().getId().equals("136642668313837569")) {
+			String previous = event.getPreviousOnlineStatus().toString();
+			String current = event.getGuild().getMember(event.getUser()).getOnlineStatus().toString();
+			String name = event.getUser().getName();
+			String msg = "@everyone - " + name + " has updated his online status from " + previous + " to " + current;
+			event.getGuild().getTextChannelById(DiscordID.PROGRAMMING).sendMessage(msg).queue();
+		}
 	}
 
 	private void addCommands() {

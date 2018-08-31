@@ -5,6 +5,7 @@ import commands.AdminCommandListener;
 import commands.GuildCommandListener;
 import commands.NicknameChangeListener;
 import commands.ReminderCommandListener;
+import commands.SecretSantaCommandListener;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
@@ -19,6 +20,7 @@ public class Makaroni {
 		jda.addEventListener(new AdminCommandListener());
 		jda.addEventListener(new NicknameChangeListener());
 		jda.addEventListener(new ReminderCommandListener());
+		jda.addEventListener(new SecretSantaCommandListener());
 		jda.getPresence().setGame(Game.of("with kittens"));
 		
 		AionNotification.start(jda);
