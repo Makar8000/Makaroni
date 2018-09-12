@@ -1,11 +1,8 @@
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import commands.AdminCommandListener;
-import commands.GuildCommandListener;
-import commands.NicknameChangeListener;
-import commands.ReminderCommandListener;
-import commands.SecretSantaCommandListener;
+
+import commands.*;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
