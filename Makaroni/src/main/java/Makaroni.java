@@ -21,6 +21,7 @@ public class Makaroni {
 		jda.addEventListener(new NicknameChangeListener());
 		jda.addEventListener(new ReminderCommandListener());
 		jda.addEventListener(new SecretSantaCommandListener());
+		jda.addEventListener(new XIVCommandListener());
 		jda.getPresence().setGame(Game.of("with kittens"));
 		
 		AionNotification.start(jda);

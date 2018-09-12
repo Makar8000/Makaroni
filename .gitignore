@@ -16,6 +16,7 @@ tokens.json
 *.tok
 *.dat
 src/test/
+.idea
 
 # music files
 *.mp3
