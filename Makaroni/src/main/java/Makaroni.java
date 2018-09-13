@@ -12,14 +12,13 @@ import news.AionNotification;
 public class Makaroni {
 	public static void main(String[] args) throws Exception {
 		JDA jda = new JDABuilder(AccountType.BOT).setToken(getTok()).buildBlocking();
-		//jda.addEventListener(new AudioPlayerListener());
 		jda.addEventListener(new GuildCommandListener());
 		jda.addEventListener(new AdminCommandListener());
 		jda.addEventListener(new NicknameChangeListener());
 		jda.addEventListener(new ReminderCommandListener());
 		jda.addEventListener(new SecretSantaCommandListener());
 		jda.addEventListener(new XIVCommandListener());
-		jda.getPresence().setGame(Game.of("with kittens"));
+		jda.getPresence().setGame(Game.playing("with kittens"));
 		
 		AionNotification.start(jda);
 	}

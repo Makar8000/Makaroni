@@ -20,14 +20,14 @@ public class SecretSantaCommandListener extends ListenerAdapter {
 	private final SantaManager santas;
 
 	public SecretSantaCommandListener() {
-		commands = new HashMap<String, PrivateAction>();
+		commands = new HashMap<>();
 		santas = SantaManager.loadSantas();
 		addCommands();
 	}
 
 	@Override
 	public void onPrivateMessageReceived(PrivateMessageReceivedEvent event) {
-		String command = event.getMessage().getContent().split(" ", 2)[0].toLowerCase();
+		String command = event.getMessage().getContentRaw().split(" ", 2)[0].toLowerCase();
 		if (commands.containsKey(command))
 			commands.get(command).run(event);
 	}
@@ -50,7 +50,7 @@ public class SecretSantaCommandListener extends ListenerAdapter {
 
 			public void run(PrivateMessageReceivedEvent event) {
 				String invalidMessage = "Invalid format. Please use the format `!addsanta Your Name | Address | Message for your secret santa (what _not_ to buy & other notes)`";
-				String[] command = event.getMessage().getContent().split(" ", 2);
+				String[] command = event.getMessage().getContentRaw().split(" ", 2);
 				if (command.length < 2) {
 					event.getChannel().sendMessage(invalidMessage).queue();
 					return;
@@ -208,7 +208,7 @@ public class SecretSantaCommandListener extends ListenerAdapter {
 				if (!santas.started())
 					return;
 				String invalidMessage = "Invalid format. Please use the format `!heysanta <your message to your secret santa>`";
-				String[] command = event.getMessage().getContent().split(" ", 2);
+				String[] command = event.getMessage().getContentRaw().split(" ", 2);
 				if (command.length < 2) {
 					event.getChannel().sendMessage(invalidMessage).queue();
 					addReaction(event.getMessage(), false);
@@ -241,7 +241,7 @@ public class SecretSantaCommandListener extends ListenerAdapter {
 				if (!santas.started())
 					return;
 				String invalidMessage = "Invalid format. Please use the format `!heyreceiver <your message to the person you are sending a gift to>`";
-				String[] command = event.getMessage().getContent().split(" ", 2);
+				String[] command = event.getMessage().getContentRaw().split(" ", 2);
 				if (command.length < 2) {
 					event.getChannel().sendMessage(invalidMessage).queue();
 					addReaction(event.getMessage(), false);

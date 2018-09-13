@@ -14,13 +14,13 @@ public class XIVCommandListener extends ListenerAdapter {
     private final Map<String, GuildAction> commands;
 
     public XIVCommandListener() {
-        commands = new HashMap<String, GuildAction>();
+        commands = new HashMap<>();
         addCommands();
     }
 
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
-        String command = event.getMessage().getContent().split(" ", 2)[0].toLowerCase();
+        String command = event.getMessage().getContentRaw().split(" ", 2)[0].toLowerCase();
         if (commands.containsKey(command))
             commands.get(command).run(event);
     }

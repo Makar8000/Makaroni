@@ -14,13 +14,13 @@ public class GuildCommandListener extends ListenerAdapter {
 	private final Map<String, GuildAction> commands;
 
 	public GuildCommandListener() {
-		commands = new HashMap<String, GuildAction>();
+		commands = new HashMap<>();
 		addCommands();
 	}
 
 	@Override
 	public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
-		String command = event.getMessage().getContent().split(" ", 2)[0].toLowerCase();
+		String command = event.getMessage().getContentRaw().split(" ", 2)[0].toLowerCase();
 		if (commands.containsKey(command))
 			commands.get(command).run(event);
 	}
@@ -39,7 +39,7 @@ public class GuildCommandListener extends ListenerAdapter {
 
 			public void run(GuildMessageReceivedEvent event) {
 				String invalidMessage = "Invalid Poll Format. Please use the format `!poll yourquestion | option1 | option2 | option3 ...`";
-				String[] command = event.getMessage().getContent().split(" ", 2);
+				String[] command = event.getMessage().getContentRaw().split(" ", 2);
 				if(command.length < 2) {
 					event.getChannel().sendMessage(invalidMessage).queue();
 					return;
@@ -59,11 +59,15 @@ public class GuildCommandListener extends ListenerAdapter {
 	    		msg.setTitle(params[0], null);
 	    		msg.setColor(Color.MAGENTA);
 	    		
-	    		String answers = "";
-	    		for(int i = 1; i < params.length; i++) 
-	    			answers += Emoji.NUMBER[i] + " " + params[i].trim() + "\n";
+	    		StringBuilder answers = new StringBuilder();
+	    		for(int i = 1; i < params.length; i++) {
+					answers.append(Emoji.NUMBER[i]);
+					answers.append(' ');
+					answers.append(params[i].trim());
+					answers.append('\n');
+				}
 	    		
-	    		msg.setDescription(answers);
+	    		msg.setDescription(answers.toString());
 	    		Message poll = event.getChannel().sendMessage(msg.build()).complete();
 	    		for(int i = 1; i < params.length; i++) {
 	    			poll.addReaction(Emoji.NUMBER[i]).complete();

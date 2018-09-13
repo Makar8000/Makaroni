@@ -11,7 +11,6 @@ import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.core.events.user.UserOnlineStatusUpdateEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import utils.DiscordID;
 
@@ -19,7 +18,7 @@ public class AdminCommandListener extends ListenerAdapter {
 	private final Map<String, GuildAction> commands;
 
 	public AdminCommandListener() {
-		commands = new HashMap<String, GuildAction>();
+		commands = new HashMap<>();
 		addCommands();
 	}
 
@@ -27,20 +26,9 @@ public class AdminCommandListener extends ListenerAdapter {
 	public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
 		if (!event.getAuthor().getId().equals(DiscordID.ADMIN_ID))
 			return;
-		String command = event.getMessage().getContent().split(" ", 2)[0].toLowerCase();
+		String command = event.getMessage().getContentRaw().split(" ", 2)[0].toLowerCase();
 		if (commands.containsKey(command))
 			commands.get(command).run(event);
-	}
-	
-	@Override
-	public void onUserOnlineStatusUpdate(UserOnlineStatusUpdateEvent event) {
-		if(event.getUser().getId().equals("136642668313837569")) {
-			String previous = event.getPreviousOnlineStatus().toString();
-			String current = event.getGuild().getMember(event.getUser()).getOnlineStatus().toString();
-			String name = event.getUser().getName();
-			String msg = "@everyone - " + name + " has updated his online status from " + previous + " to " + current;
-			event.getGuild().getTextChannelById(DiscordID.PROGRAMMING).sendMessage(msg).queue();
-		}
 	}
 
 	private void addCommands() {
@@ -73,7 +61,7 @@ public class AdminCommandListener extends ListenerAdapter {
 			}
 
 			public void run(GuildMessageReceivedEvent event) {
-				String[] command = event.getMessage().getContent().split(" ", 4);
+				String[] command = event.getMessage().getContentRaw().split(" ", 4);
 				if (command.length == 4) {
 					String strChan = command[1];
 					String strFrom = command[2];
@@ -83,7 +71,7 @@ public class AdminCommandListener extends ListenerAdapter {
 					Message end = chan.getMessageById(strTo).complete();
 					for (Message message : chan.getIterableHistory()) {
 						if (message.getCreationTime().isAfter(start.getCreationTime()) && message.getCreationTime().isBefore(end.getCreationTime())) {
-							System.out.println(message.getAuthor().getName() + ": " + message.getContent());
+							System.out.println(message.getAuthor().getName() + ": " + message.getContentRaw());
 							message.delete().queue();
 						}
 					}
@@ -101,7 +89,7 @@ public class AdminCommandListener extends ListenerAdapter {
 			}
 
 			public void run(GuildMessageReceivedEvent event) {
-				String[] command = event.getMessage().getContent().split(" ", 2);
+				String[] command = event.getMessage().getContentRaw().split(" ", 2);
 				if (command.length != 2) 
 					return;
 				
@@ -142,8 +130,8 @@ public class AdminCommandListener extends ListenerAdapter {
 			}
 
 			public void run(GuildMessageReceivedEvent event) {
-				String[] command = event.getMessage().getContent().split(" ", 2);
-				if (command.length == 2 && commands.containsKey(command[1]))
+				String[] command = event.getMessage().getContentRaw().split(" ", 2);
+				if (command.length == 2)
 					commands.remove(command[1]);
 			}
 		};
@@ -158,7 +146,7 @@ public class AdminCommandListener extends ListenerAdapter {
 			}
 
 			public void run(GuildMessageReceivedEvent event) {
-				String[] command = event.getMessage().getContent().split(" ", 3);
+				String[] command = event.getMessage().getContentRaw().split(" ", 3);
 				if (command.length == 3) {
 					GuildAction newCommand = newDynamicCommand(command[1], command[2]);
 					commands.put(newCommand.getCommand(), newCommand);
@@ -170,7 +158,7 @@ public class AdminCommandListener extends ListenerAdapter {
 	}
 
 	private GuildAction newDynamicCommand(String command, String response) {
-		GuildAction action = new GuildAction() {
+		return new GuildAction() {
 			public String getCommand() {
 				return "!" + command;
 			}
@@ -179,6 +167,5 @@ public class AdminCommandListener extends ListenerAdapter {
 				event.getChannel().sendMessage(response).queue();
 			}
 		};
-		return action;
 	}
 }

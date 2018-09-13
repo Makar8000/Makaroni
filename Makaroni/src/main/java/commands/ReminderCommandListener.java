@@ -20,14 +20,14 @@ public class ReminderCommandListener extends ListenerAdapter {
 	private final ReminderManager reminders;
 
 	public ReminderCommandListener() {
-		commands = new HashMap<String, GuildAction>();
+		commands = new HashMap<>();
 		reminders = new ReminderManager();
 		addCommands();
 	}
 
 	@Override
 	public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
-		String command = event.getMessage().getContent().split(" ", 2)[0].toLowerCase();
+		String command = event.getMessage().getContentRaw().split(" ", 2)[0].toLowerCase();
 		if (commands.containsKey(command))
 			commands.get(command).run(event);
 	}
@@ -46,7 +46,7 @@ public class ReminderCommandListener extends ListenerAdapter {
 			}
 
 			public void run(GuildMessageReceivedEvent event) {
-				String[] command = event.getMessage().getContent().split(" ", 5);
+				String[] command = event.getMessage().getContentRaw().split(" ", 5);
 				if (command.length == 5) {
 					try {
 						DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy h:mma z");
@@ -58,7 +58,6 @@ public class ReminderCommandListener extends ListenerAdapter {
 						event.getChannel().sendMessage(remind.getEmbed()).queue();
 					} catch (ParseException e) {
 						event.getChannel().sendMessage("Invalid date format.\n Corrent Date format is `MM/dd/yyyy h:mma z`").queue();
-						return;
 					}
 				} else if (command.length == 2 && command[1].equalsIgnoreCase("help")) {
 					String remsyntax = "Syntax for reminder command is as follows:\n";
@@ -106,7 +105,7 @@ public class ReminderCommandListener extends ListenerAdapter {
 			}
 
 			public void run(GuildMessageReceivedEvent event) {
-				String[] command = event.getMessage().getContent().split(" ", 2);
+				String[] command = event.getMessage().getContentRaw().split(" ", 2);
 				if(command.length == 2) {
 					if(reminders.remove(command[1], event.getAuthor())) {
 						event.getChannel().sendMessage("Reminder removed.").queue();
@@ -127,7 +126,7 @@ public class ReminderCommandListener extends ListenerAdapter {
 			}
 
 			public void run(GuildMessageReceivedEvent event) {
-				String[] command = event.getMessage().getContent().split(" ", 6);
+				String[] command = event.getMessage().getContentRaw().split(" ", 6);
 				if(command.length == 6) {
 					try {
 						TextChannel chan = event.getGuild().getTextChannelsByName(command[1], true).get(0);
@@ -143,7 +142,6 @@ public class ReminderCommandListener extends ListenerAdapter {
 						event.getChannel().sendMessage(remind.getEmbed()).queue();
 					} catch (NumberFormatException | ParseException ex) {
 						event.getChannel().sendMessage("Invalid reminder format.").queue();
-						return;
 					}
 				}
 			}
