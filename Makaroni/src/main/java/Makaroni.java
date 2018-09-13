@@ -8,10 +8,11 @@ import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.entities.Game;
 import news.AionNotification;
+import utils.TokenManager;
 
 public class Makaroni {
 	public static void main(String[] args) throws Exception {
-		JDA jda = new JDABuilder(AccountType.BOT).setToken(getTok()).buildBlocking();
+		JDA jda = new JDABuilder(AccountType.BOT).setToken(TokenManager.getDiscordTok()).buildBlocking();
 		jda.addEventListener(new GuildCommandListener());
 		jda.addEventListener(new AdminCommandListener());
 		jda.addEventListener(new NicknameChangeListener());
@@ -21,14 +22,5 @@ public class Makaroni {
 		jda.getPresence().setGame(Game.playing("with kittens"));
 		
 		AionNotification.start(jda);
-	}
-
-	private static String getTok() {
-		try {
-			return new String(Files.readAllBytes(new File("bot.tok").toPath()));
-		} catch (IOException e) {
-			e.printStackTrace();
-			return "";
-		}
 	}
 }
