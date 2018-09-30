@@ -21,6 +21,6 @@ public class Makaroni {
 		jda.addEventListener(new XIVCommandListener());
 		jda.getPresence().setGame(Game.playing("with kittens"));
 		
-		AionNotification.start(jda);
+		//AionNotification.start(jda);
 	}
 }
