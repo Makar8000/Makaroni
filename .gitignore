@@ -9,26 +9,28 @@
 *.ear
 
 # project files
-/Makaroni/.settings/
-/Makaroni/bin/
-config.json
-tokens.json
+.idea
+/bin/
+/out/
+*.json
 *.tok
 *.dat
-src/test/
-.idea
+*.iml
 
-# music files
+# media files
 *.mp3
 *.aac
 *.m4a
 *.wav
 *.flac
 *.ogg
+*.png
+*.jpg
+*.jpeg
 
 # gradle
-/Makaroni/build/
-/Makaroni/.gradle/
+/build/
+.gradle/
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
