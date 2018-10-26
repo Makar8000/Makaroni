@@ -9,10 +9,5 @@ public class AionNotification {
 			AionFetcher.loopNews(jda.getTextChannelById(DiscordID.GAMING));
 		});
 		t1.start();
-		
-		Thread t2 = new Thread(() -> {
-			AionFetcher.loopPosts(jda.getTextChannelById(DiscordID.MAPLE_SYRUP));
-		});
-		t2.start();
 	}
 }
