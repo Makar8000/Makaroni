@@ -1,12 +1,6 @@
 package utils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -86,7 +80,10 @@ public class SantaManager implements Serializable {
 
 	public ArrayList<Santa> getAll() {
 		ArrayList<Santa> ret = new ArrayList<Santa>(santas.values());
-		Collections.shuffle(ret);
+		do
+			Collections.shuffle(ret);
+		while(!checkExclusions(ret));
+
 		return ret;
 	}
 	
@@ -99,6 +96,15 @@ public class SantaManager implements Serializable {
 		});
 		
 		return str.toString();
+	}
+
+	public static boolean checkExclusions(ArrayList<Santa> s) {
+		for (int i = 0; i < s.size(); i++) {
+			int j = i == s.size() - 1 ? 0 : i + 1;
+			if(DiscordID.EXCLUSIONS.get(s.get(i)).contains(s.get(j)))
+				return false;
+		}
+		return true;
 	}
 	
 	public static SantaManager loadSantas() {
