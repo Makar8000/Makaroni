@@ -101,7 +101,7 @@ public class SantaManager implements Serializable {
 	public static boolean checkExclusions(ArrayList<Santa> s) {
 		for (int i = 0; i < s.size(); i++) {
 			int j = i == s.size() - 1 ? 0 : i + 1;
-			if(DiscordID.EXCLUSIONS.get(s.get(i)).contains(s.get(j)))
+			if(DiscordID.EXCLUSIONS.get(s.get(i).getDiscordID()).contains(s.get(j).getDiscordID()))
 				return false;
 		}
 		return true;
