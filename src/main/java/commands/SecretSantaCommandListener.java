@@ -192,6 +192,7 @@ public class SecretSantaCommandListener extends ListenerAdapter {
                 }
 
                 santas.reset();
+                event.getChannel().sendMessage("Secret Santa manager has been reset").queue();
             }
         };
         commands.put(action.getCommand(), action);

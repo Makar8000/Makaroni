@@ -99,6 +99,9 @@ public class SantaManager implements Serializable {
     }
 
     public static boolean checkExclusions(ArrayList<Santa> s) {
+        if(s.size() < 2)
+            return true;
+
         for (int i = 0; i < s.size(); i++) {
             int j = i == s.size() - 1 ? 0 : i + 1;
 
