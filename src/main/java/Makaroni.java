@@ -3,7 +3,6 @@ import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.entities.Game;
-import news.AionNotification;
 import utils.TokenManager;
 
 public class Makaroni {
@@ -16,6 +15,6 @@ public class Makaroni {
 		jda.addEventListener(new SecretSantaCommandListener());
 		jda.getPresence().setGame(Game.playing("with kittens"));
 		
-		AionNotification.start(jda);
+		//AionNotification.start(jda);
 	}
 }
