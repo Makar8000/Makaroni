@@ -3,6 +3,7 @@ package commands;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.PrivateChannel;
+import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
@@ -40,6 +41,7 @@ public class SecretSantaCommandListener extends ListenerAdapter {
         addSantaStopCommand();
         addSantaSendSCommand();
         addSantaSendRCommand();
+        addSantaSendACommand();
     }
 
     private PrivateAction addSantaAddCommand() {
@@ -258,6 +260,38 @@ public class SecretSantaCommandListener extends ListenerAdapter {
                 msg.setAuthor("Santa", null, "http://makar.pw/up/EukeH.png");
                 msg.setDescription(command[1]);
                 msg.addField("", "**You can reply using** `!heysanta <msg>`", false);
+                chan.sendMessage(msg.build()).queue();
+
+                addReaction(event.getMessage(), true);
+            }
+        };
+        commands.put(action.getCommand(), action);
+        return action;
+    }
+
+    private PrivateAction addSantaSendACommand() {
+        PrivateAction action = new PrivateAction() {
+            public String getCommand() {
+                return "!heychannel";
+            }
+
+            public void run(PrivateMessageReceivedEvent event) {
+                if (!santas.started())
+                    return;
+                String invalidMessage = "Invalid format. Please use the format `!heychannel <your message to the #secret-santa channel>`";
+                String[] command = event.getMessage().getContentRaw().split(" ", 2);
+                if (command.length < 2) {
+                    event.getChannel().sendMessage(invalidMessage).queue();
+                    addReaction(event.getMessage(), false);
+                    return;
+                }
+
+                TextChannel chan = event.getJDA().getTextChannelById(DiscordID.SECRET_SANTA);
+
+                EmbedBuilder msg = new EmbedBuilder();
+                msg.setColor(new Color(244, 74, 65));
+                msg.setAuthor("Santa", null, "http://makar.pw/up/EukeH.png");
+                msg.setDescription(command[1]);
                 chan.sendMessage(msg.build()).queue();
 
                 addReaction(event.getMessage(), true);
