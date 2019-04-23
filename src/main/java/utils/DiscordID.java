@@ -11,4 +11,5 @@ public class DiscordID {
 	public static final String KYSIS = "175172897155973120";
 	public static final String KAGA = "173302124656984064";
 	public static final String VENUS = "374995210591272960";
+	public static final String CHRIS = "134209083749171200";
 }
