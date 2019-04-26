@@ -1,6 +1,5 @@
 package commands;
 
-import net.dv8tion.jda.core.events.ShutdownEvent;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberNickChangeEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
@@ -18,10 +17,9 @@ public class NicknameChangeListener extends ListenerAdapter {
 		nickChanges = readFile(fileName);
 	}
 
-
 	@Override
 	public void onGuildMemberNickChange(GuildMemberNickChangeEvent event) {
-		if(event.getGuild().getAuditLogs().complete().get(0).getUser().getIdLong() != event.getUser().getIdLong()) 
+		if(event.getGuild().getAuditLogs().cache(false).complete().get(0).getUser().getIdLong() != event.getUser().getIdLong())
 			return;
 			
 		long canadian = event.getGuild().getRolesByName("canadian", true).get(0).getIdLong();
@@ -49,9 +47,11 @@ public class NicknameChangeListener extends ListenerAdapter {
 
 			} else {
 				nickChanges.put(event.getUser().getIdLong(), System.currentTimeMillis());
+				saveFile(fileName);
 			}
 		} else {
 			nickChanges.put(event.getUser().getIdLong(), System.currentTimeMillis());
+			saveFile(fileName);
 		}
 	}
 
@@ -77,16 +77,15 @@ public class NicknameChangeListener extends ListenerAdapter {
 		
 		return ret;
 	}
-	
-	@Override
-	public void onShutdown(ShutdownEvent event) {
+
+	private void saveFile(String fn) {
 		try {
-			PrintWriter pr = new PrintWriter(new FileWriter(fileName));
-			
+			PrintWriter pr = new PrintWriter(new FileWriter(fn));
+
 			nickChanges.forEach((u, t) -> {
 				pr.println(u + "," + t);
 			});
-			
+
 			pr.close();
 		} catch (IOException e) {
 			e.printStackTrace();
