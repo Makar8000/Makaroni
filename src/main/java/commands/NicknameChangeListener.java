@@ -1,18 +1,14 @@
 package commands;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
+import net.dv8tion.jda.core.events.ShutdownEvent;
+import net.dv8tion.jda.core.events.guild.member.GuildMemberNickChangeEvent;
+import net.dv8tion.jda.core.hooks.ListenerAdapter;
+
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import net.dv8tion.jda.core.events.ShutdownEvent;
-import net.dv8tion.jda.core.events.guild.member.GuildMemberNickChangeEvent;
-import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 public class NicknameChangeListener extends ListenerAdapter {
 	private final Map<Long, Long> nickChanges;
@@ -39,12 +35,17 @@ public class NicknameChangeListener extends ListenerAdapter {
 			if(daysPassed < 7) {
 				long canChangeTime = nickChanges.get(event.getUser().getIdLong()).longValue() + (1000 * 60 * 60 * 24 * 7);
 				SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy h:mma z");
-				String msg = "Sorry, but nickname changes in Canadaland are restricted to once a week. Please try again after ";
-				msg += df.format(new Date(canChangeTime));
-				msg += ".\n\n If you need an exception, please contact Makar.";
+				StringBuilder msg = new StringBuilder("Sorry, but nickname changes in Canadaland are restricted to once a week. Please try again after ");
+				msg.append(df.format(new Date(canChangeTime)));
+				msg.append(".\n\n If you need an exception, please contact Makar.");
 
-				event.getUser().openPrivateChannel().complete().sendMessage(msg).complete();
-				event.getGuild().getController().setNickname(event.getMember(), event.getPrevNick()).complete();
+				try {
+					event.getUser().openPrivateChannel().queue(chan -> chan.sendMessage(msg.toString()).queue());
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+
+				event.getGuild().getController().setNickname(event.getMember(), event.getPrevNick()).queue();
 
 			} else {
 				nickChanges.put(event.getUser().getIdLong(), System.currentTimeMillis());
