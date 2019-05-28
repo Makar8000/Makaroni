@@ -1,14 +1,17 @@
 package commands;
 
-import java.awt.Color;
-import java.util.HashMap;
-import java.util.Map;
-
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import utils.Constants;
+import utils.DiscordID;
 import utils.Emoji;
+
+import java.awt.*;
+import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GuildCommandListener extends ListenerAdapter {
 	private final Map<String, GuildAction> commands;
@@ -30,15 +33,17 @@ public class GuildCommandListener extends ListenerAdapter {
 		addPingCommand();
 		addPoopCommand();
 	}
-	
+
 	private GuildAction addPollCommand() {
 		GuildAction action = new GuildAction() {
 			public String getCommand() {
-				return "!poll";
+				return "poll";
 			}
 
 			public void run(GuildMessageReceivedEvent event) {
-				String invalidMessage = "Invalid Poll Format. Please use the format `!poll yourquestion | option1 | option2 | option3 ...`";
+				String invalidMessage = "Invalid Poll Format. Please use the format `"
+						+ Constants.PREFIX
+						+ "poll yourquestion | option1 | option2 | option3 ...`";
 				String[] command = event.getMessage().getContentRaw().split(" ", 2);
 				if(command.length < 2) {
 					event.getChannel().sendMessage(invalidMessage).queue();
@@ -52,13 +57,13 @@ public class GuildCommandListener extends ListenerAdapter {
 					event.getChannel().sendMessage("You can only have up to 9 different answers in a poll.").queue();
 					return;
 				}
-				
+
 				event.getMessage().delete().queue();
 				EmbedBuilder msg = new EmbedBuilder();
 				msg.setAuthor(event.getAuthor().getName() + " created a poll!", null, event.getAuthor().getEffectiveAvatarUrl());
 	    		msg.setTitle(params[0], null);
 	    		msg.setColor(Color.MAGENTA);
-	    		
+
 	    		StringBuilder answers = new StringBuilder();
 	    		for(int i = 1; i < params.length; i++) {
 					answers.append(Emoji.NUMBER[i]);
@@ -66,7 +71,7 @@ public class GuildCommandListener extends ListenerAdapter {
 					answers.append(params[i].trim());
 					answers.append('\n');
 				}
-	    		
+
 	    		msg.setDescription(answers.toString());
 	    		Message poll = event.getChannel().sendMessage(msg.build()).complete();
 	    		for(int i = 1; i < params.length; i++) {
@@ -74,36 +79,39 @@ public class GuildCommandListener extends ListenerAdapter {
 	    		}
 			}
 		};
-		commands.put(action.getCommand(), action);
+		commands.put(Constants.PREFIX + action.getCommand(), action);
 		return action;
 	}
 
 	private GuildAction addPingCommand() {
 		GuildAction action = new GuildAction() {
 			public String getCommand() {
-				return "!pingg";
+				return "pingg";
 			}
 
 			public void run(GuildMessageReceivedEvent event) {
-				event.getChannel().sendMessage("Pong!").queue();
+				event.getChannel().sendMessage("Ping: ...").queue(m -> {
+					long ping = event.getMessage().getCreationTime().until(m.getCreationTime(), ChronoUnit.MILLIS);
+					m.editMessage("Ping: " + ping  + "ms | Websocket: " + event.getJDA().getPing() + "ms").queue();
+				});
 			}
 		};
-		commands.put(action.getCommand(), action);
+		commands.put(Constants.PREFIX + action.getCommand(), action);
 		return action;
 	}
 
 	private GuildAction addPoopCommand() {
 		GuildAction action = new GuildAction() {
 			public String getCommand() {
-				return "!poop";
+				return "poop";
 			}
 
 			public void run(GuildMessageReceivedEvent event) {
-				if (event.getAuthor().getId().equals("173302124656984064"))
+				if (event.getAuthor().getId().equals(DiscordID.KAGA))
 					event.getChannel().sendMessage("no").queue();
 			}
 		};
-		commands.put(action.getCommand(), action);
+		commands.put(Constants.PREFIX + action.getCommand(), action);
 		return action;
 	}
 }

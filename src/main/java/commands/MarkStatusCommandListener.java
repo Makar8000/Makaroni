@@ -12,6 +12,7 @@ import net.dv8tion.jda.core.events.message.react.GenericMessageReactionEvent;
 import net.dv8tion.jda.core.events.user.GenericUserEvent;
 import net.dv8tion.jda.core.events.user.update.GenericUserPresenceEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import utils.Constants;
 import utils.DiscordID;
 
 import java.awt.*;
@@ -40,7 +41,7 @@ public class MarkStatusCommandListener extends ListenerAdapter {
     public void onPrivateMessageReceived(PrivateMessageReceivedEvent event) {
         String id = event.getAuthor().getId();
         if (id.equals(DiscordID.CHRIS) || id.equals(DiscordID.ADMIN_ID)) {
-            if (event.getMessage().getContentRaw().startsWith("!isMarkAlive")) {
+            if (event.getMessage().getContentRaw().startsWith(Constants.PREFIX + "isMarkAlive")) {
                 EmbedBuilder msg = new EmbedBuilder();
                 msg.setTimestamp(Instant.ofEpochMilli(markStatus.getEpoch()));
                 msg.setColor(Color.CYAN);
@@ -48,11 +49,11 @@ public class MarkStatusCommandListener extends ListenerAdapter {
                 msg.setDescription(markStatus.toString());
                 event.getChannel().sendMessage(msg.build()).queue();
                 event.getJDA().getUserById(DiscordID.ADMIN_ID).openPrivateChannel().queue(chan ->
-                        chan.sendMessage(event.getAuthor().getName() + " used the !isMarkAlive command").queue()
+                        chan.sendMessage(event.getAuthor().getName() + " used the isMarkAlive command").queue()
                 );
-            } else if (event.getMessage().getContentRaw().startsWith("!disableTracking")) {
+            } else if (event.getMessage().getContentRaw().startsWith(Constants.PREFIX + "disableTracking")) {
                 enabled = false;
-            } else if (event.getMessage().getContentRaw().startsWith("!enableTracking")) {
+            } else if (event.getMessage().getContentRaw().startsWith(Constants.PREFIX + "enableTracking")) {
                 enabled = true;
             }
         }

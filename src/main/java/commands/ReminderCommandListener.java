@@ -4,6 +4,7 @@ import bean.Reminder;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import utils.Constants;
 import utils.ReminderManager;
 
 import java.text.DateFormat;
@@ -41,7 +42,7 @@ public class ReminderCommandListener extends ListenerAdapter {
 	private GuildAction addReminderCommand() {
 		GuildAction action = new GuildAction() {
 			public String getCommand() {
-				return "!remind";
+				return "remind";
 			}
 
 			public void run(GuildMessageReceivedEvent event) {
@@ -60,21 +61,23 @@ public class ReminderCommandListener extends ListenerAdapter {
 					}
 				} else if (command.length == 2 && command[1].equalsIgnoreCase("help")) {
 					String remsyntax = "Syntax for reminder command is as follows:\n";
-					remsyntax += "!remind [date] [time] [timezone] [msg]\n";
+					remsyntax += Constants.PREFIX;
+					remsyntax += "remind [date] [time] [timezone] [msg]\n";
 					remsyntax += "\nExample:\n";
-					remsyntax += "!remind 4/30/2017 6:00PM CST make dinner!";
+					remsyntax += Constants.PREFIX;
+					remsyntax += "remind 4/30/2017 6:00PM CST make dinner!";
 					event.getChannel().sendMessage(remsyntax).queue();
 				}
 			}
 		};
-		commands.put(action.getCommand(), action);
+		commands.put(Constants.PREFIX + action.getCommand(), action);
 		return action;
 	}
 
 	private GuildAction addGetRemindersCommand() {
 		GuildAction action = new GuildAction() {
 			public String getCommand() {
-				return "!myreminders";
+				return "myreminders";
 			}
 
 			public void run(GuildMessageReceivedEvent event) {
@@ -93,14 +96,14 @@ public class ReminderCommandListener extends ListenerAdapter {
 				}
 			}
 		};
-		commands.put(action.getCommand(), action);
+		commands.put(Constants.PREFIX + action.getCommand(), action);
 		return action;
 	}
 	
 	private GuildAction addRemReminderCommand() {
 		GuildAction action = new GuildAction() {
 			public String getCommand() {
-				return "!remreminder";
+				return "remreminder";
 			}
 
 			public void run(GuildMessageReceivedEvent event) {
@@ -114,14 +117,14 @@ public class ReminderCommandListener extends ListenerAdapter {
 				}
 			}
 		};
-		commands.put(action.getCommand(), action);
+		commands.put(Constants.PREFIX + action.getCommand(), action);
 		return action;
 	}
 	
 	private GuildAction addReminderAllCommand() {
 		GuildAction action = new GuildAction() {
 			public String getCommand() {
-				return "!reminderall";
+				return "reminderall";
 			}
 
 			public void run(GuildMessageReceivedEvent event) {
@@ -145,7 +148,7 @@ public class ReminderCommandListener extends ListenerAdapter {
 				}
 			}
 		};
-		commands.put(action.getCommand(), action);
+		commands.put(Constants.PREFIX + action.getCommand(), action);
 		return action;
 	}
 }

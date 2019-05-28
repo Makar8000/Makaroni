@@ -8,6 +8,7 @@ import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import utils.Constants;
 import utils.DiscordID;
 import utils.SantaManager;
 
@@ -47,7 +48,7 @@ public class SecretSantaCommandListener extends ListenerAdapter {
     private PrivateAction addSantaAddCommand() {
         PrivateAction action = new PrivateAction() {
             public String getCommand() {
-                return "!addsanta";
+                return "addsanta";
             }
 
             public void run(PrivateMessageReceivedEvent event) {
@@ -86,14 +87,14 @@ public class SecretSantaCommandListener extends ListenerAdapter {
                 event.getChannel().sendMessage(msg.build()).queue();
             }
         };
-        commands.put(action.getCommand(), action);
+        commands.put(Constants.PREFIX + action.getCommand(), action);
         return action;
     }
 
     private PrivateAction addSantaRemoveCommand() {
         PrivateAction action = new PrivateAction() {
             public String getCommand() {
-                return "!removesanta";
+                return "removesanta";
             }
 
             public void run(PrivateMessageReceivedEvent event) {
@@ -112,14 +113,14 @@ public class SecretSantaCommandListener extends ListenerAdapter {
                 event.getChannel().sendMessage(msg.build()).queue();
             }
         };
-        commands.put(action.getCommand(), action);
+        commands.put(Constants.PREFIX + action.getCommand(), action);
         return action;
     }
 
     private PrivateAction addSantaParticipantsCommand() {
         PrivateAction action = new PrivateAction() {
             public String getCommand() {
-                return "!santaparticipants";
+                return "santaparticipants";
             }
 
             public void run(PrivateMessageReceivedEvent event) {
@@ -134,14 +135,14 @@ public class SecretSantaCommandListener extends ListenerAdapter {
                 event.getChannel().sendMessage(str.toString()).queue();
             }
         };
-        commands.put(action.getCommand(), action);
+        commands.put(Constants.PREFIX + action.getCommand(), action);
         return action;
     }
 
     private PrivateAction addSantaGoCommand() {
         PrivateAction action = new PrivateAction() {
             public String getCommand() {
-                return "!gosanta";
+                return "gosanta";
             }
 
             public void run(PrivateMessageReceivedEvent event) {
@@ -175,14 +176,14 @@ public class SecretSantaCommandListener extends ListenerAdapter {
                 santas.start();
             }
         };
-        commands.put(action.getCommand(), action);
+        commands.put(Constants.PREFIX + action.getCommand(), action);
         return action;
     }
 
     private PrivateAction addSantaStopCommand() {
         PrivateAction action = new PrivateAction() {
             public String getCommand() {
-                return "!stopsanta";
+                return "stopsanta";
             }
 
             public void run(PrivateMessageReceivedEvent event) {
@@ -197,20 +198,22 @@ public class SecretSantaCommandListener extends ListenerAdapter {
                 event.getChannel().sendMessage("Secret Santa manager has been reset").queue();
             }
         };
-        commands.put(action.getCommand(), action);
+        commands.put(Constants.PREFIX + action.getCommand(), action);
         return action;
     }
 
     private PrivateAction addSantaSendSCommand() {
         PrivateAction action = new PrivateAction() {
             public String getCommand() {
-                return "!heysanta";
+                return "heysanta";
             }
 
             public void run(PrivateMessageReceivedEvent event) {
                 if (!santas.started())
                     return;
-                String invalidMessage = "Invalid format. Please use the format `!heysanta <your message to your secret santa>`";
+                String invalidMessage = "Invalid format. Please use the format `"
+                        + Constants.PREFIX
+                        + "heysanta <your message to your secret santa>`";
                 String[] command = event.getMessage().getContentRaw().split(" ", 2);
                 if (command.length < 2) {
                     event.getChannel().sendMessage(invalidMessage).queue();
@@ -225,26 +228,28 @@ public class SecretSantaCommandListener extends ListenerAdapter {
                 msg.setColor(Color.MAGENTA);
                 msg.setAuthor(event.getAuthor().getName(), null, event.getAuthor().getEffectiveAvatarUrl());
                 msg.setDescription(command[1]);
-                msg.addField("", "**You can reply using** `!heyreceiver <msg>`", false);
+                msg.addField("", "**You can reply using** `" + Constants.PREFIX + "heyreceiver <msg>`", false);
                 chan.sendMessage(msg.build()).queue();
 
                 addReaction(event.getMessage(), true);
             }
         };
-        commands.put(action.getCommand(), action);
+        commands.put(Constants.PREFIX + action.getCommand(), action);
         return action;
     }
 
     private PrivateAction addSantaSendRCommand() {
         PrivateAction action = new PrivateAction() {
             public String getCommand() {
-                return "!heyreceiver";
+                return "heyreceiver";
             }
 
             public void run(PrivateMessageReceivedEvent event) {
                 if (!santas.started())
                     return;
-                String invalidMessage = "Invalid format. Please use the format `!heyreceiver <your message to the person you are sending a gift to>`";
+                String invalidMessage = "Invalid format. Please use the format `"
+                        + Constants.PREFIX
+                        + "heyreceiver <your message to the person you are sending a gift to>`";
                 String[] command = event.getMessage().getContentRaw().split(" ", 2);
                 if (command.length < 2) {
                     event.getChannel().sendMessage(invalidMessage).queue();
@@ -259,26 +264,28 @@ public class SecretSantaCommandListener extends ListenerAdapter {
                 msg.setColor(new Color(244, 74, 65));
                 msg.setAuthor("Santa", null, "http://makar.pw/up/EukeH.png");
                 msg.setDescription(command[1]);
-                msg.addField("", "**You can reply using** `!heysanta <msg>`", false);
+                msg.addField("", "**You can reply using** `" + Constants.PREFIX + "heysanta <msg>`", false);
                 chan.sendMessage(msg.build()).queue();
 
                 addReaction(event.getMessage(), true);
             }
         };
-        commands.put(action.getCommand(), action);
+        commands.put(Constants.PREFIX + action.getCommand(), action);
         return action;
     }
 
     private PrivateAction addSantaSendACommand() {
         PrivateAction action = new PrivateAction() {
             public String getCommand() {
-                return "!heychannel";
+                return "heychannel";
             }
 
             public void run(PrivateMessageReceivedEvent event) {
                 if (!santas.started())
                     return;
-                String invalidMessage = "Invalid format. Please use the format `!heychannel <your message to the #secret-santa channel>`";
+                String invalidMessage = "Invalid format. Please use the format `"
+                        + Constants.PREFIX
+                        + "heychannel <your message to the #secret-santa channel>`";
                 String[] command = event.getMessage().getContentRaw().split(" ", 2);
                 if (command.length < 2) {
                     event.getChannel().sendMessage(invalidMessage).queue();
@@ -297,7 +304,7 @@ public class SecretSantaCommandListener extends ListenerAdapter {
                 addReaction(event.getMessage(), true);
             }
         };
-        commands.put(action.getCommand(), action);
+        commands.put(Constants.PREFIX + action.getCommand(), action);
         return action;
     }
 
