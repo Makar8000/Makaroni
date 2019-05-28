@@ -1,9 +1,11 @@
 package utils;
 
+import bean.Reminder;
+import net.dv8tion.jda.core.entities.User;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import net.dv8tion.jda.core.entities.User;
 
 public class ReminderManager {
 	private final Map<String, Reminder> reminders;

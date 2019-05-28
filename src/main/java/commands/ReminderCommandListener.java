@@ -1,5 +1,11 @@
 package commands;
 
+import bean.Reminder;
+import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import utils.ReminderManager;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -7,13 +13,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.TimeZone;
-
-import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.core.hooks.ListenerAdapter;
-import utils.Reminder;
-import utils.ReminderManager;
 
 public class ReminderCommandListener extends ListenerAdapter {
 	private final Map<String, GuildAction> commands;

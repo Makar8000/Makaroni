@@ -1,5 +1,6 @@
 package commands;
 
+import bean.Santa;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.PrivateChannel;
@@ -8,7 +9,6 @@ import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import utils.DiscordID;
-import utils.Santa;
 import utils.SantaManager;
 
 import java.awt.*;

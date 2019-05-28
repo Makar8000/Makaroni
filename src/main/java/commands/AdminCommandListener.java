@@ -1,24 +1,27 @@
 package commands;
 
-import java.awt.Color;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-
 import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.core.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import utils.DiscordID;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import java.awt.*;
+import java.util.HashMap;
+import java.util.Map;
+
 public class AdminCommandListener extends ListenerAdapter {
 	private final Map<String, GuildAction> commands;
+	private final Map<String, PrivateAction> privateCommands;
 
 	public AdminCommandListener() {
 		commands = new HashMap<>();
+		privateCommands = new HashMap<>();
 		addCommands();
 	}
 
@@ -31,12 +34,40 @@ public class AdminCommandListener extends ListenerAdapter {
 			commands.get(command).run(event);
 	}
 
+	@Override
+	public void onPrivateMessageReceived(PrivateMessageReceivedEvent event) {
+		if (!event.getAuthor().getId().equals(DiscordID.ADMIN_ID))
+			return;
+		String command = event.getMessage().getContentRaw().split(" ", 2)[0].toLowerCase();
+		if (privateCommands.containsKey(command))
+			privateCommands.get(command).run(event);
+	}
+
 	private void addCommands() {
+		addSetGameCommand();
 		addShutdownCommand();
 		addDeleteCommand();
 		addEvalCommand();
 		addRemoveCommand();
 		addDynamicCommand();
+	}
+
+	private PrivateAction addSetGameCommand() {
+		PrivateAction action = new PrivateAction() {
+			public String getCommand() {
+				return "!setgame";
+			}
+
+			public void run(PrivateMessageReceivedEvent event) {
+				String[] command = event.getMessage().getContentRaw().split(" ", 2);
+				if (command.length != 2)
+					return;
+
+				event.getJDA().getPresence().setGame(Game.playing(command[1]));
+			}
+		};
+		privateCommands.put(action.getCommand(), action);
+		return action;
 	}
 
 	private GuildAction addShutdownCommand() {
