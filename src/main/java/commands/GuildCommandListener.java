@@ -12,6 +12,7 @@ import java.awt.*;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 public class GuildCommandListener extends ListenerAdapter {
 	private final Map<String, GuildAction> commands;
@@ -31,6 +32,7 @@ public class GuildCommandListener extends ListenerAdapter {
 	private void addCommands() {
 		addPollCommand();
 		addPingCommand();
+		addRollCommand();
 		addPoopCommand();
 	}
 
@@ -94,6 +96,30 @@ public class GuildCommandListener extends ListenerAdapter {
 					long ping = event.getMessage().getCreationTime().until(m.getCreationTime(), ChronoUnit.MILLIS);
 					m.editMessage("Ping: " + ping  + "ms | Websocket: " + event.getJDA().getPing() + "ms").queue();
 				});
+			}
+		};
+		commands.put(Constants.PREFIX + action.getCommand(), action);
+		return action;
+	}
+
+	private GuildAction addRollCommand() {
+		GuildAction action = new GuildAction() {
+			public String getCommand() {
+				return "roll";
+			}
+
+			public void run(GuildMessageReceivedEvent event) {
+				String[] command = event.getMessage().getContentRaw().split(" ", 2);
+				int max = 100;
+				if(command.length > 1) {
+					try {
+						max = Integer.parseInt(command[1]) + 1;
+					} catch(NumberFormatException ex) {
+						event.getChannel().sendMessage("Invalid format. Use `!roll [max]`. Example: `!roll 1000`").queue();
+						return;
+					}
+				}
+				event.getChannel().sendMessage("You rolled a " + new Random().nextInt(max) + "!").queue();
 			}
 		};
 		commands.put(Constants.PREFIX + action.getCommand(), action);
