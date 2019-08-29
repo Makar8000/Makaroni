@@ -18,9 +18,9 @@ dependencies {
   implementation ('net.dv8tion:JDA:3.8.3_463') {
     exclude module: 'opus-java'
   }
+  implementation 'com.squareup.okhttp3:okhttp:4.1.0'
   implementation 'org.slf4j:slf4j-api:1.7.26'
   implementation 'org.json:json:20180813'
-  implementation 'commons-io:commons-io:2.6'
 }
 
 jar {

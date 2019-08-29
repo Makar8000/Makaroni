@@ -1,39 +1,35 @@
 package news;
 
 import net.dv8tion.jda.core.entities.TextChannel;
-import org.apache.commons.io.IOUtils;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 
 
 public class AionFetcher {
     public static void loopNews(TextChannel channel) {
         AionCache<AionArticle> cache = loadAionArtCache();
+        OkHttpClient client = new OkHttpClient();
 
         while (true) {
             try {
-                URL url = new URL("https://www.aiononline.com/data/aion-news.json");
-                HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                con.connect();
+                Request req = new Request.Builder().url("https://www.aiononline.com/data/aion-news.json").build();
+                Response resp = client.newCall(req).execute();
 
-                if (con.getResponseCode() != 200) {
+                if (resp.code() != 200) {
                     Thread.sleep(60000);
                     continue;
                 }
 
-                String jsonString = IOUtils.toString(con.getInputStream(), StandardCharsets.UTF_8);
-                con.disconnect();
-
-                LinkedList<AionArticle> newArticles = new LinkedList<AionArticle>();
+                LinkedList<AionArticle> newArticles = new LinkedList<>();
                 try {
-                    JSONArray json = new JSONArray(jsonString);
-                    for(int i = 0; i < json.length(); i++) {
+                    JSONArray json = new JSONArray(resp.body().string());
+                    for (int i = 0; i < json.length(); i++) {
                         JSONObject jsonArt = json.getJSONObject(i);
                         AionArticle temp = new AionArticle(jsonArt);
 
@@ -74,7 +70,7 @@ public class AionFetcher {
             fis.close();
         } catch (Exception e) {
             e.printStackTrace();
-            return new AionCache<AionArticle>();
+            return new AionCache<>();
         }
 
         return a;
