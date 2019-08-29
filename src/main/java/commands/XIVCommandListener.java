@@ -27,8 +27,8 @@ public class XIVCommandListener extends ListenerAdapter {
     public XIVCommandListener() {
         commands = new HashMap<>();
         keyParam = "?private_key=" + TokenManager.getXIVAPITok();
-        baseUrl = "https://xivapi.com";
-        ariyalaUrl = "https://ffxiv.ariyala.com/store.app?identifier=";
+        baseUrl = "http://xivapi.com";
+        ariyalaUrl = "http://ffxiv.ariyala.com/store.app?identifier=";
         augmentTokens = new HashMap<>();
         augmentTokens.put("mainthand", "solvent");
         augmentTokens.put("head", "twine");
@@ -104,6 +104,8 @@ public class XIVCommandListener extends ListenerAdapter {
                             if (augType.equals("solvent"))
                                 solvent = true;
                         } else {
+                            if (slot.startsWith("ring"))
+                                slot = "ring";
                             raidPieces.add(slot);
                         }
                     }
