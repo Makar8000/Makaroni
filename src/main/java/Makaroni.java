@@ -13,6 +13,7 @@ public class Makaroni {
 		jda.addEventListener(new NicknameChangeListener());
 		jda.addEventListener(new ReminderCommandListener());
 		jda.addEventListener(new MarkStatusCommandListener());
+		jda.addEventListener(new XIVCommandListener());
 		//jda.addEventListener(new SecretSantaCommandListener())
 		jda.getPresence().setGame(Game.playing("with kittens"));
 		
