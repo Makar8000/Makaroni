@@ -17,18 +17,24 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class AriyalaSet {
+    private String ariyalaId;
     private String job;
     private int coatings;
     private int twines;
     private boolean solvent;
     private ArrayList<String> raidPieces;
 
-    public AriyalaSet() {
+    public AriyalaSet(String ariyalaId) {
+        this.ariyalaId = ariyalaId;
         this.job = "";
         coatings = 0;
         twines = 0;
         solvent = false;
         this.raidPieces = new ArrayList<>();
+    }
+
+    public String getAriyalaId() {
+        return ariyalaId;
     }
 
     public void setJob(String job) {
@@ -70,9 +76,12 @@ public class AriyalaSet {
     public String getRaidPieces() {
         StringBuilder ret = new StringBuilder();
 
-        for (String p : raidPieces) {
-            ret.append(p);
-            ret.append(", ");
+        for (int i = 0; i < raidPieces.size(); i++) {
+            String slot = raidPieces.get(i);
+            ret.append(slot.substring(0, 1).toUpperCase());
+            ret.append(slot.substring(1));
+            if (i != raidPieces.size() - 1)
+                ret.append(", ");
         }
 
         return ret.toString();
@@ -80,10 +89,14 @@ public class AriyalaSet {
 
     public MessageEmbed getMessage() {
         EmbedBuilder msg = new EmbedBuilder();
-        msg.setColor(new Color(131, 149, 229));
-        msg.setAuthor("Ariyala Data", null, iconUrl + job + "_Solid.png");
-        msg.addField("Coatings", ""+this.getCoatings(), true);
-        msg.addField("Twines", ""+this.getTwines(), true);
+        msg.setColor(new Color(162, 132, 224));
+        msg.setAuthor("Ariyala Data", ariyalaUrl + this.getAriyalaId(), iconUrl + this.getJob() + "_Solid.png");
+        if (this.getCoatings() > 0)
+            msg.addField("Coating(s)", "" + this.getCoatings(), true);
+        if (this.getTwines() > 0)
+            msg.addField("Twine(s)", "" + this.getTwines(), true);
+        if (this.hasSolvent())
+            msg.addField("Solvent", "1", true);
         msg.setTitle("Raid Pieces");
         msg.setThumbnail(thumbnailUrl);
         msg.setDescription(this.getRaidPieces());
@@ -91,11 +104,11 @@ public class AriyalaSet {
     }
 
     public static AriyalaSet getFromId(String ariyalaId) {
-        AriyalaSet set = new AriyalaSet();
+        AriyalaSet set = new AriyalaSet(ariyalaId);
 
         try {
             /* Grab ariyala item list */
-            Request ariyalaRequest = new Request.Builder().url(ariyalaUrl + ariyalaId).build();
+            Request ariyalaRequest = new Request.Builder().url(ariyalaUrl + "store.app?identifier=" + ariyalaId).build();
             Response ariyalaResponse = client.newCall(ariyalaRequest).execute();
             JSONObject json = new JSONObject(ariyalaResponse.body().string());
             String job = json.getString("content");
@@ -142,7 +155,7 @@ public class AriyalaSet {
     }
 
     private static final OkHttpClient client = new OkHttpClient();
-    private static final String ariyalaUrl = "http://ffxiv.ariyala.com/store.app?identifier=";
+    private static final String ariyalaUrl = "http://ffxiv.ariyala.com/";
     private static final String baseUrl = "http://xivapi.com";
     private static final String thumbnailUrl = "https://i.imgur.com/WFExWBM.png";
     private static final String iconUrl = "https://raw.githubusercontent.com/anoyetta/ACT.Hojoring/master/source/ACT.SpecialSpellTimer/ACT.SpecialSpellTimer.Core/resources/icon/Job/";

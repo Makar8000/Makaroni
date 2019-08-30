@@ -58,6 +58,7 @@ public class XIVCommandListener extends ListenerAdapter {
                         msg.editMessage("Network error!").queue();
 
                     msg.delete().queue();
+                    event.getMessage().delete().queue();
                     event.getChannel().sendMessage(ariyalaSet.getMessage()).queue();
                 });
             }
