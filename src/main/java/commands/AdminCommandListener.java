@@ -32,7 +32,7 @@ public class AdminCommandListener extends ListenerAdapter {
 
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
-        if (!event.getAuthor().getId().equals(DiscordID.ADMIN_ID))
+        if (!event.getAuthor().getId().equals(DiscordID.ADMIN))
             return;
         String command = event.getMessage().getContentRaw().split(" ", 2)[0].toLowerCase();
         if (commands.containsKey(command))
@@ -41,7 +41,7 @@ public class AdminCommandListener extends ListenerAdapter {
 
     @Override
     public void onPrivateMessageReceived(PrivateMessageReceivedEvent event) {
-        if (!event.getAuthor().getId().equals(DiscordID.ADMIN_ID))
+        if (!event.getAuthor().getId().equals(DiscordID.ADMIN))
             return;
         String command = event.getMessage().getContentRaw().split(" ", 2)[0].toLowerCase();
         if (privateCommands.containsKey(command))

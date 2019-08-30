@@ -146,7 +146,7 @@ public class SecretSantaCommandListener extends ListenerAdapter {
             }
 
             public void run(PrivateMessageReceivedEvent event) {
-                if (!event.getAuthor().getId().equals(DiscordID.ADMIN_ID))
+                if (!event.getAuthor().getId().equals(DiscordID.ADMIN))
                     return;
                 if (santas.size() <= 1) {
                     event.getChannel().sendMessage("Only one participant").queue();
@@ -187,7 +187,7 @@ public class SecretSantaCommandListener extends ListenerAdapter {
             }
 
             public void run(PrivateMessageReceivedEvent event) {
-                if (!event.getAuthor().getId().equals(DiscordID.ADMIN_ID))
+                if (!event.getAuthor().getId().equals(DiscordID.ADMIN))
                     return;
                 if (santas.size() <= 1) {
                     event.getChannel().sendMessage("Only one participant").queue();

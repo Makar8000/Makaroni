@@ -28,7 +28,7 @@ public class MarkStatusCommandListener extends ListenerAdapter {
     }
 
     private boolean isMark(User user) {
-        return user.getId().equals(DiscordID.ADMIN_ID);
+        return user.getId().equals(DiscordID.ADMIN);
     }
 
     private void parseEvent(User user, Class event) {
@@ -40,7 +40,7 @@ public class MarkStatusCommandListener extends ListenerAdapter {
     @Override
     public void onPrivateMessageReceived(PrivateMessageReceivedEvent event) {
         String id = event.getAuthor().getId();
-        if (id.equals(DiscordID.CHRIS) || id.equals(DiscordID.ADMIN_ID)) {
+        if (id.equals(DiscordID.CHRIS) || id.equals(DiscordID.ADMIN)) {
             if (event.getMessage().getContentRaw().startsWith(Constants.PREFIX + "isMarkAlive")) {
                 EmbedBuilder msg = new EmbedBuilder();
                 msg.setTimestamp(Instant.ofEpochMilli(markStatus.getEpoch()));
@@ -48,7 +48,7 @@ public class MarkStatusCommandListener extends ListenerAdapter {
                 msg.setTitle("Mark Status");
                 msg.setDescription(markStatus.toString());
                 event.getChannel().sendMessage(msg.build()).queue();
-                event.getJDA().getUserById(DiscordID.ADMIN_ID).openPrivateChannel().queue(chan ->
+                event.getJDA().getUserById(DiscordID.ADMIN).openPrivateChannel().queue(chan ->
                         chan.sendMessage(event.getAuthor().getName() + " used the isMarkAlive command").queue()
                 );
             } else if (event.getMessage().getContentRaw().startsWith(Constants.PREFIX + "disableTracking")) {
