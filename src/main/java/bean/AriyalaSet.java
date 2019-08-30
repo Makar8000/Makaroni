@@ -144,7 +144,7 @@ public class AriyalaSet {
     private static final OkHttpClient client = new OkHttpClient();
     private static final String ariyalaUrl = "http://ffxiv.ariyala.com/store.app?identifier=";
     private static final String baseUrl = "http://xivapi.com";
-    private static final String thumbnailUrl = "https://i.imgur.com/UhbRFE2.png";
+    private static final String thumbnailUrl = "https://i.imgur.com/WFExWBM.png";
     private static final String iconUrl = "https://raw.githubusercontent.com/anoyetta/ACT.Hojoring/master/source/ACT.SpecialSpellTimer/ACT.SpecialSpellTimer.Core/resources/icon/Job/";
     private static final Map<String, String> augmentTokens = new HashMap<String, String>() {
         {
