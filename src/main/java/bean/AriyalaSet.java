@@ -126,7 +126,7 @@ public class AriyalaSet {
 
                 /* Grab XIVAPI item data */
                 int itemId = gearSet.getInt(slot);
-                String xivApiUrl = baseUrl + "/Item/" + itemId + "?private_key=" + TokenManager.getXIVAPITok() + "&columns=Name";
+                String xivApiUrl = apiUrl + "/Item/" + itemId + "?private_key=" + TokenManager.getXIVAPITok() + "&columns=Name";
                 Request itemRequest = new Request.Builder().url(xivApiUrl).build();
                 Response itemResponse = client.newCall(itemRequest).execute();
                 String itemName = new JSONObject(itemResponse.body().string()).getString("Name");
@@ -142,6 +142,8 @@ public class AriyalaSet {
                 } else {
                     if (slot.startsWith("ring"))
                         slot = "ring";
+                    if (slot.equals("mainhand"))
+                        slot = "weapon";
                     set.addRaidPiece(slot);
                 }
             }
@@ -156,12 +158,12 @@ public class AriyalaSet {
 
     private static final OkHttpClient client = new OkHttpClient();
     private static final String ariyalaUrl = "http://ffxiv.ariyala.com/";
-    private static final String baseUrl = "http://xivapi.com";
+    private static final String apiUrl = "http://xivapi.com";
     private static final String thumbnailUrl = "https://i.imgur.com/WFExWBM.png";
     private static final String iconUrl = "https://raw.githubusercontent.com/anoyetta/ACT.Hojoring/master/source/ACT.SpecialSpellTimer/ACT.SpecialSpellTimer.Core/resources/icon/Job/";
     private static final Map<String, String> augmentTokens = new HashMap<String, String>() {
         {
-            put("mainthand", "solvent");
+            put("mainhand", "solvent");
             put("head", "twine");
             put("chest", "twine");
             put("hands", "twine");
