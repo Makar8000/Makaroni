@@ -85,7 +85,6 @@ public class AdminCommandListener extends ListenerAdapter {
 
                 TextChannel chan = event.getJDA().getTextChannelById(command[1]);
                 for (Message message : chan.getIterableHistory().stream()
-                        .limit(1000)
                         .filter(m -> !m.isPinned())
                         .collect(Collectors.toList()))
                     message.delete().queue();
