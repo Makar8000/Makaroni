@@ -1,9 +1,9 @@
 package bean;
 
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.MessageEmbed;
-import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.User;
 
 import java.awt.*;
 import java.text.SimpleDateFormat;
@@ -59,15 +59,12 @@ public class Reminder {
 	}
 
 	private Runnable getRunnable() {
-		Runnable remindRunnable = new Runnable() {
-			public void run() {
-				if (!all)
-					channel.sendMessage("Hey " + user.getAsMention() + ", " + msg).queue();
-				else
-					channel.sendMessage("Hey @everyone, " + msg).queue();
-			}
-		};
-		return remindRunnable;
+		return () -> {
+            if (!all)
+                channel.sendMessage("Hey " + user.getAsMention() + ", " + msg).queue();
+            else
+                channel.sendMessage("Hey @everyone, " + msg).queue();
+        };
 	}
 
 	private long getTimeUntil(long epoch) {
@@ -133,11 +130,5 @@ public class Reminder {
 		return -1;
 	}
 
-	public static Comparator<Reminder> ReminderComparator = new Comparator<Reminder>() {
-		@Override
-		public int compare(Reminder r1, Reminder r2) {
-			return r1.compareTo(r2);
-		}
-
-	};
+	public static Comparator<Reminder> ReminderComparator = Reminder::compareTo;
 }

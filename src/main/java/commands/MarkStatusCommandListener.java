@@ -1,17 +1,17 @@
 package commands;
 
 import bean.UserStatus;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.User;
-import net.dv8tion.jda.core.events.guild.member.GenericGuildMemberEvent;
-import net.dv8tion.jda.core.events.guild.voice.GenericGuildVoiceEvent;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.core.events.message.MessageUpdateEvent;
-import net.dv8tion.jda.core.events.message.priv.PrivateMessageReceivedEvent;
-import net.dv8tion.jda.core.events.message.react.GenericMessageReactionEvent;
-import net.dv8tion.jda.core.events.user.GenericUserEvent;
-import net.dv8tion.jda.core.events.user.update.GenericUserPresenceEvent;
-import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.events.guild.member.GenericGuildMemberEvent;
+import net.dv8tion.jda.api.events.guild.voice.GenericGuildVoiceEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
+import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.react.GenericMessageReactionEvent;
+import net.dv8tion.jda.api.events.user.GenericUserEvent;
+import net.dv8tion.jda.api.events.user.update.GenericUserPresenceEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import utils.Constants;
 import utils.DiscordID;
 
@@ -66,7 +66,7 @@ public class MarkStatusCommandListener extends ListenerAdapter {
 
     @Override
     public void onGenericUserPresence(GenericUserPresenceEvent event) {
-        parseEvent(event.getUser(), event.getClass());
+        parseEvent(event.getMember().getUser(), event.getClass());
     }
 
     @Override

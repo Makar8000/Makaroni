@@ -1,15 +1,15 @@
 package commands;
 
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.JDA;
-import net.dv8tion.jda.core.entities.Game;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.events.ReconnectedEvent;
-import net.dv8tion.jda.core.events.ResumedEvent;
-import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.core.events.message.priv.PrivateMessageReceivedEvent;
-import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.events.ReconnectedEvent;
+import net.dv8tion.jda.api.events.ResumedEvent;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import utils.Constants;
 import utils.DiscordID;
 
@@ -59,7 +59,7 @@ public class AdminCommandListener extends ListenerAdapter {
     }
 
     private void setGame(JDA jda, String game) {
-        jda.getPresence().setGame(Game.playing(game));
+        jda.getPresence().setActivity(Activity.playing(game));
     }
 
     private void addCommands() {
@@ -140,10 +140,10 @@ public class AdminCommandListener extends ListenerAdapter {
                     String strFrom = command[2];
                     String strTo = command[3];
                     TextChannel chan = event.getGuild().getTextChannelById(strChan);
-                    Message start = chan.getMessageById(strFrom).complete();
-                    Message end = chan.getMessageById(strTo).complete();
+                    Message start = chan.retrieveMessageById(strFrom).complete();
+                    Message end = chan.retrieveMessageById(strTo).complete();
                     for (Message message : chan.getIterableHistory()) {
-                        if (message.getCreationTime().isAfter(start.getCreationTime()) && message.getCreationTime().isBefore(end.getCreationTime())) {
+                        if (message.getTimeCreated().isAfter(start.getTimeCreated()) && message.getTimeCreated().isBefore(end.getTimeCreated())) {
                             System.out.println(message.getAuthor().getName() + ": " + message.getContentRaw());
                             message.delete().queue();
                         }

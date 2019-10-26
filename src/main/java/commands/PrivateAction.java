@@ -1,5 +1,5 @@
 package commands;
-import net.dv8tion.jda.core.events.message.priv.PrivateMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 
 abstract class PrivateAction {
 	public abstract String getCommand();

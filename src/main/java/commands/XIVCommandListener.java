@@ -1,8 +1,8 @@
 package commands;
 
 import bean.AriyalaSet;
-import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import utils.Constants;
 
 import java.util.HashMap;

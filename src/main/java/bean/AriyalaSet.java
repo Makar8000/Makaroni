@@ -1,7 +1,7 @@
 package bean;
 
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.MessageEmbed;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -147,9 +147,7 @@ public class AriyalaSet {
                     set.addRaidPiece(slot);
                 }
             }
-        } catch (IOException ex) {
-            return null;
-        } catch (JSONException ex) {
+        } catch (IOException | JSONException ex) {
             return null;
         }
 

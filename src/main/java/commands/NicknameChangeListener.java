@@ -1,7 +1,7 @@
 package commands;
 
-import net.dv8tion.jda.core.events.guild.member.GuildMemberNickChangeEvent;
-import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdateNicknameEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
@@ -18,8 +18,8 @@ public class NicknameChangeListener extends ListenerAdapter {
 	}
 
 	@Override
-	public void onGuildMemberNickChange(GuildMemberNickChangeEvent event) {
-		if(event.getGuild().getAuditLogs().cache(false).complete().get(0).getUser().getIdLong() != event.getUser().getIdLong())
+	public void onGuildMemberUpdateNickname(GuildMemberUpdateNicknameEvent event) {
+		if(event.getGuild().retrieveAuditLogs().cache(false).complete().get(0).getUser().getIdLong() != event.getUser().getIdLong())
 			return;
 			
 		long canadian = event.getGuild().getRolesByName("canadian", true).get(0).getIdLong();
@@ -43,7 +43,7 @@ public class NicknameChangeListener extends ListenerAdapter {
 					ex.printStackTrace();
 				}
 
-				event.getGuild().getController().setNickname(event.getMember(), event.getPrevNick()).queue();
+				event.getMember().modifyNickname(event.getOldNickname()).queue();
 
 			} else {
 				nickChanges.put(event.getUser().getIdLong(), System.currentTimeMillis());
@@ -56,7 +56,7 @@ public class NicknameChangeListener extends ListenerAdapter {
 	}
 
 	private HashMap<Long, Long> readFile(String fn) {
-		HashMap<Long, Long> ret = new HashMap<Long, Long>();
+		HashMap<Long, Long> ret = new HashMap<>();
 
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(fn));
@@ -82,9 +82,7 @@ public class NicknameChangeListener extends ListenerAdapter {
 		try {
 			PrintWriter pr = new PrintWriter(new FileWriter(fn));
 
-			nickChanges.forEach((u, t) -> {
-				pr.println(u + "," + t);
-			});
+			nickChanges.forEach((u, t) -> pr.println(u + "," + t));
 
 			pr.close();
 		} catch (IOException e) {
