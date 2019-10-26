@@ -9,7 +9,7 @@ public class TokenManager {
     private static String xivapiToken;
 
     public static String getDiscordTok() {
-        if(discordToken != null && discordToken.length() > 0)
+        if (discordToken != null && discordToken.length() > 0)
             return discordToken;
 
         try {
@@ -23,7 +23,7 @@ public class TokenManager {
     }
 
     public static String getXIVAPITok() {
-        if(xivapiToken != null && xivapiToken.length() > 0)
+        if (xivapiToken != null && xivapiToken.length() > 0)
             return xivapiToken;
 
         try {
