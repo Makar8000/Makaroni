@@ -14,5 +14,5 @@ public class DiscordID {
     public static final String PROGRAMMING = "176944717987053568";
     public static final String GAMING = "91676956352868352";
     public static final String MAPLE_SYRUP = "127575428217962496";
-    public static final String SECRET_SANTA = "507421277557096458";
+    public static final String SECRET_SANTA = "637563943790968853";
 }

@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SecretSantaCommandListener extends ListenerAdapter {
+    private final String santaAvatar = "http://up.makar.pw/H4ppmsVb.png";
     private final Map<String, PrivateAction> commands;
     private final SantaManager santas;
 
@@ -262,7 +263,7 @@ public class SecretSantaCommandListener extends ListenerAdapter {
 
                 EmbedBuilder msg = new EmbedBuilder();
                 msg.setColor(new Color(244, 74, 65));
-                msg.setAuthor("Santa", null, "http://makar.pw/up/EukeH.png");
+                msg.setAuthor("Santa", null, santaAvatar);
                 msg.setDescription(command[1]);
                 msg.addField("", "**You can reply using** `" + Constants.PREFIX + "heysanta <msg>`", false);
                 chan.sendMessage(msg.build()).queue();
@@ -297,7 +298,7 @@ public class SecretSantaCommandListener extends ListenerAdapter {
 
                 EmbedBuilder msg = new EmbedBuilder();
                 msg.setColor(new Color(244, 74, 65));
-                msg.setAuthor("Santa", null, "http://makar.pw/up/EukeH.png");
+                msg.setAuthor("Santa", null, santaAvatar);
                 msg.setDescription(command[1]);
                 chan.sendMessage(msg.build()).queue();
 

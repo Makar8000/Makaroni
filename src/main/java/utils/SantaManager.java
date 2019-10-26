@@ -1,8 +1,10 @@
 package utils;
 
 import bean.Santa;
+import com.google.gson.reflect.TypeToken;
 
-import java.io.*;
+import java.io.Serializable;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -10,27 +12,28 @@ import java.util.Map;
 
 public class SantaManager implements Serializable {
     private static final long serialVersionUID = 6144114037574556203L;
+    private static final String fileName = "santas.json";
     private Map<String, Santa> santas;
     private Map<String, String> selectedPairs;
     private boolean gameStarted;
 
     public SantaManager() {
-        santas = new HashMap<String, Santa>();
-        selectedPairs = new HashMap<String, String>();
+        santas = new HashMap<>();
+        selectedPairs = new HashMap<>();
         gameStarted = false;
     }
 
     public boolean add(Santa santa) {
         boolean ret = !santas.containsKey(santa.getDiscordID());
         santas.put(santa.getDiscordID(), santa);
-        updateSantas();
+        Data.saveAsJson(this, fileName);
         return ret;
     }
 
     public boolean remove(String discordID) {
         boolean ret = santas.containsKey(discordID);
         santas.remove(discordID);
-        updateSantas();
+        Data.saveAsJson(this, fileName);
         return ret;
     }
 
@@ -40,7 +43,7 @@ public class SantaManager implements Serializable {
 
     public void setReceiver(String santa, String receiver) {
         selectedPairs.put(santa, receiver);
-        updateSantas();
+        Data.saveAsJson(this, fileName);
     }
 
     public String getReceiver(String santa) {
@@ -70,18 +73,18 @@ public class SantaManager implements Serializable {
 
     public void start() {
         this.gameStarted = true;
-        updateSantas();
+        Data.saveAsJson(this, fileName);
     }
 
     public void reset() {
-        this.santas = new HashMap<String, Santa>();
-        this.selectedPairs = new HashMap<String, String>();
+        this.santas = new HashMap<>();
+        this.selectedPairs = new HashMap<>();
         this.gameStarted = false;
-        updateSantas();
+        Data.saveAsJson(this, fileName);
     }
 
     public ArrayList<Santa> getAll() {
-        ArrayList<Santa> ret = new ArrayList<Santa>(santas.values());
+        ArrayList<Santa> ret = new ArrayList<>(santas.values());
         do
             Collections.shuffle(ret);
         while (!checkExclusions(ret));
@@ -100,8 +103,8 @@ public class SantaManager implements Serializable {
         return str.toString();
     }
 
-    public static boolean checkExclusions(ArrayList<Santa> s) {
-        if(s.size() < 2)
+    private static boolean checkExclusions(ArrayList<Santa> s) {
+        if (s.size() < 2)
             return true;
 
         for (int i = 0; i < s.size(); i++) {
@@ -117,52 +120,18 @@ public class SantaManager implements Serializable {
                 case DiscordID.BECCA:
                     if (id2.equals(DiscordID.LIN))
                         return false;
-                case DiscordID.KYSIS:
-                    if (id2.equals(DiscordID.VENUS))
-                        return false;
-                case DiscordID.KAGA:
-                    if (id2.equals(DiscordID.VENUS))
-                    return false;
-                case DiscordID.VENUS:
-                    if(id2.equals(DiscordID.KAGA))
-                        return false;
-                    if(id2.equals(DiscordID.KYSIS))
-                        return false;
             }
         }
         return true;
     }
 
     public static SantaManager loadSantas() {
-        SantaManager s;
+        Type objectType = new TypeToken<SantaManager>() {}.getType();
+        SantaManager s = (SantaManager) Data.loadFromJson(objectType, fileName);
 
-        try {
-            FileInputStream fis = new FileInputStream("santas.dat");
-            ObjectInputStream ois = new ObjectInputStream(fis);
-            s = (SantaManager) ois.readObject();
-            ois.close();
-            fis.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new SantaManager();
-        }
+        if (s == null)
+            s = new SantaManager();
 
         return s;
-    }
-
-    private boolean updateSantas() {
-        try {
-            new File("santas.dat").delete();
-            FileOutputStream fos = new FileOutputStream("santas.dat");
-            ObjectOutputStream oos = new ObjectOutputStream(fos);
-            oos.writeObject(this);
-            oos.close();
-            fos.close();
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return false;
     }
 }
