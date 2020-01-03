@@ -53,6 +53,8 @@ public class SecretSantaCommandListener extends ListenerAdapter {
             }
 
             public void run(PrivateMessageReceivedEvent event) {
+                if (santas.started())
+                    return;
                 String invalidMessage = "Invalid format. Please use the format `!addsanta Your Name | Address | Message for your secret santa (what _not_ to buy & other notes)`";
                 String[] command = event.getMessage().getContentRaw().split(" ", 2);
                 if (command.length < 2) {
@@ -99,6 +101,8 @@ public class SecretSantaCommandListener extends ListenerAdapter {
             }
 
             public void run(PrivateMessageReceivedEvent event) {
+                if (santas.started())
+                    return;
                 EmbedBuilder msg = new EmbedBuilder();
                 if (santas.remove(event.getAuthor().getId())) {
                     msg.setAuthor(event.getAuthor().getName() + " has been removed as a secret Santa.", null,
@@ -125,6 +129,9 @@ public class SecretSantaCommandListener extends ListenerAdapter {
             }
 
             public void run(PrivateMessageReceivedEvent event) {
+                if (!event.getAuthor().getId().equals(DiscordID.ADMIN))
+                    return;
+
                 StringBuilder str = new StringBuilder();
 
                 str.append("Current secret santa participants are:\n\n");

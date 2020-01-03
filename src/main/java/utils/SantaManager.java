@@ -15,11 +15,13 @@ public class SantaManager implements Serializable {
     private static final String fileName = "santas.json";
     private Map<String, Santa> santas;
     private Map<String, String> selectedPairs;
+    private Map<String, String> blacklistedPairs;
     private boolean gameStarted;
 
     public SantaManager() {
         santas = new HashMap<>();
         selectedPairs = new HashMap<>();
+        blacklistedPairs = new HashMap<>();
         gameStarted = false;
     }
 
@@ -103,7 +105,7 @@ public class SantaManager implements Serializable {
         return str.toString();
     }
 
-    private static boolean checkExclusions(ArrayList<Santa> s) {
+    private boolean checkExclusions(ArrayList<Santa> s) {
         if (s.size() < 2)
             return true;
 
@@ -113,14 +115,8 @@ public class SantaManager implements Serializable {
             String id1 = s.get(i).getDiscordID();
             String id2 = s.get(j).getDiscordID();
 
-            switch (id1) {
-                case DiscordID.LIN:
-                    if (id2.equals(DiscordID.BECCA))
-                        return false;
-                case DiscordID.BECCA:
-                    if (id2.equals(DiscordID.LIN))
-                        return false;
-            }
+            if (id2.equals(blacklistedPairs.get(id1)))
+                return false;
         }
         return true;
     }
