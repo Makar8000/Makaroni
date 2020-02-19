@@ -92,7 +92,7 @@ public class AriyalaSet {
         msg.setColor(new Color(162, 132, 224));
         msg.setAuthor("Ariyala Data", ariyalaUrl + this.getAriyalaId(), iconUrl + this.getJob() + "_Solid.png");
         if (this.getCoatings() > 0)
-            msg.addField("Coating(s)", "" + this.getCoatings(), true);
+            msg.addField("Glaze(s)", "" + this.getCoatings(), true);
         if (this.getTwines() > 0)
             msg.addField("Twine(s)", "" + this.getTwines(), true);
         if (this.hasSolvent())

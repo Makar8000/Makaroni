@@ -65,6 +65,7 @@ public class AdminCommandListener extends ListenerAdapter {
     private void addCommands() {
         addSetGameCommand();
         addShutdownCommand();
+        addPrivateShutdownCommand();
         addDeleteCommand();
         addEvalCommand();
         addRemoveCommand();
@@ -106,6 +107,21 @@ public class AdminCommandListener extends ListenerAdapter {
                     return;
 
                 setGame(event.getJDA(), command[1]);
+            }
+        };
+        privateCommands.put(Constants.PREFIX + action.getCommand(), action);
+        return action;
+    }
+
+    private PrivateAction addPrivateShutdownCommand() {
+        PrivateAction action = new PrivateAction() {
+            public String getCommand() {
+                return "shutdown";
+            }
+
+            public void run(PrivateMessageReceivedEvent event) {
+                event.getJDA().shutdown();
+                System.exit(0);
             }
         };
         privateCommands.put(Constants.PREFIX + action.getCommand(), action);
