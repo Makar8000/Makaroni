@@ -9,7 +9,7 @@ public class Makaroni {
         JDA jda = new JDABuilder().setToken(TokenManager.getDiscordTok()).build().awaitReady();
         jda.addEventListener(new GuildCommandListener());
         jda.addEventListener(new AdminCommandListener());
-        jda.addEventListener(new NicknameChangeListener());
+        //jda.addEventListener(new NicknameChangeListener());
         jda.addEventListener(new ReminderCommandListener());
         jda.addEventListener(new MarkStatusCommandListener());
         jda.addEventListener(new XIVCommandListener());
