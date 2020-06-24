@@ -16,9 +16,11 @@ import java.util.Random;
 
 public class GuildCommandListener extends ListenerAdapter {
     private final Map<String, GuildAction> commands;
+    private final Random rand;
 
     public GuildCommandListener() {
         commands = new HashMap<>();
+        rand = new Random();
         addCommands();
     }
 
@@ -119,7 +121,7 @@ public class GuildCommandListener extends ListenerAdapter {
                         return;
                     }
                 }
-                event.getChannel().sendMessage("You rolled a " + new Random().nextInt(max) + "!").queue();
+                event.getChannel().sendMessage("You rolled a " + rand.nextInt(max) + "!").queue();
             }
         };
         commands.put(Constants.PREFIX + action.getCommand(), action);
