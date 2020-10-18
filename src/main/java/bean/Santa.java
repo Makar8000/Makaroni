@@ -46,13 +46,13 @@ public class Santa implements Serializable {
         StringBuilder str = new StringBuilder();
 
         str.append("Name: ");
-        str.append(getRealName());
+        str.append(this.getRealName());
         str.append("\nDiscord ID: ");
-        str.append(getDiscordID());
+        str.append(this.getDiscordID());
         str.append("\nAddress: ");
-        str.append(getAddress());
+        str.append(this.getAddress());
         str.append("\nNotes: ");
-        str.append(getNotes());
+        str.append(this.getNotes());
 
         return str.toString();
     }

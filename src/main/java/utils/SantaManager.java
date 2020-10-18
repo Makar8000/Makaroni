@@ -15,7 +15,7 @@ public class SantaManager implements Serializable {
     private static final String fileName = "santas.json";
     private Map<String, Santa> santas;
     private Map<String, String> selectedPairs;
-    private Map<String, String> blacklistedPairs;
+    private Map<String, ArrayList<String>> blacklistedPairs;
     private boolean gameStarted;
 
     public SantaManager() {
@@ -112,11 +112,17 @@ public class SantaManager implements Serializable {
         for (int i = 0; i < s.size(); i++) {
             int j = i == s.size() - 1 ? 0 : i + 1;
 
-            String id1 = s.get(i).getDiscordID();
-            String id2 = s.get(j).getDiscordID();
+            String santaId = s.get(i).getDiscordID();
+            String receiverId = s.get(j).getDiscordID();
 
-            if (id2.equals(blacklistedPairs.get(id1)))
-                return false;
+            ArrayList<String> blkListedReceivers = blacklistedPairs.get(santaId);
+            if (blkListedReceivers == null || blkListedReceivers.isEmpty())
+                continue;
+
+            for (String blkListedReceiver : blkListedReceivers) {
+                if (receiverId.equals(blkListedReceiver))
+                    return false;
+            }
         }
         return true;
     }
