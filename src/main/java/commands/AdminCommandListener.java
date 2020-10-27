@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.events.ResumedEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import news.FFXIVNotification;
 import utils.Constants;
 import utils.DiscordID;
 
@@ -71,6 +72,7 @@ public class AdminCommandListener extends ListenerAdapter {
         addRemoveCommand();
         addDynamicCommand();
         addDeleteAllCommand();
+        addFFXIVMaintNotifyCommand();
     }
 
     private PrivateAction addDeleteAllCommand() {
@@ -122,6 +124,21 @@ public class AdminCommandListener extends ListenerAdapter {
             public void run(PrivateMessageReceivedEvent event) {
                 event.getJDA().shutdown();
                 System.exit(0);
+            }
+        };
+        privateCommands.put(Constants.PREFIX + action.getCommand(), action);
+        return action;
+    }
+
+    private PrivateAction addFFXIVMaintNotifyCommand() {
+        PrivateAction action = new PrivateAction() {
+            public String getCommand() {
+                return "ffxivmaint";
+            }
+
+            public void run(PrivateMessageReceivedEvent event) {
+                FFXIVNotification.start(event.getChannel());
+                event.getAuthor().openPrivateChannel().complete().sendMessage("Added to queue.").queue();
             }
         };
         privateCommands.put(Constants.PREFIX + action.getCommand(), action);
