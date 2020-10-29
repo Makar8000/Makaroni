@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SecretSantaCommandListener extends ListenerAdapter {
-    private final String santaAvatar = "http://up.makar.pw/H4ppmsVb.png";
+    private String santaAvatar = "http://up.makar.pw/JgewAgnU.png";
     private final Map<String, PrivateAction> commands;
     private final SantaManager santas;
 
@@ -44,6 +44,7 @@ public class SecretSantaCommandListener extends ListenerAdapter {
         addSantaSendSCommand();
         addSantaSendRCommand();
         addSantaSendACommand();
+        addSantaAvatarCommand();
     }
 
     private PrivateAction addSantaAddCommand() {
@@ -141,6 +142,30 @@ public class SecretSantaCommandListener extends ListenerAdapter {
                 });
 
                 event.getChannel().sendMessage(str.toString()).queue();
+            }
+        };
+        commands.put(Constants.PREFIX + action.getCommand(), action);
+        return action;
+    }
+
+    private PrivateAction addSantaAvatarCommand() {
+        PrivateAction action = new PrivateAction() {
+            public String getCommand() {
+                return "santaavatar";
+            }
+
+            public void run(PrivateMessageReceivedEvent event) {
+                if (!event.getAuthor().getId().equals(DiscordID.ADMIN))
+                    return;
+
+                String[] command = event.getMessage().getContentRaw().split(" ", 2);
+                if (command.length < 2)
+                    return;
+
+                santaAvatar = command[1];
+                EmbedBuilder msg = new EmbedBuilder();
+                msg.setAuthor("New Santa avatar set", santaAvatar, santaAvatar);
+                event.getChannel().sendMessage(msg.build()).queue();
             }
         };
         commands.put(Constants.PREFIX + action.getCommand(), action);
