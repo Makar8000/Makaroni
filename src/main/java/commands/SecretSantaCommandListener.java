@@ -326,7 +326,7 @@ public class SecretSantaCommandListener extends ListenerAdapter {
                     return;
                 }
 
-                TextChannel chan = event.getJDA().getTextChannelById(DiscordID.SECRET_SANTA);
+                TextChannel chan = event.getJDA().getTextChannelById(santas.getChannelId());
 
                 EmbedBuilder msg = new EmbedBuilder();
                 msg.setColor(new Color(244, 74, 65));

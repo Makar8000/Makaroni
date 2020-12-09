@@ -13,6 +13,7 @@ import java.util.Map;
 public class SantaManager implements Serializable {
     private static final long serialVersionUID = 6144114037574556203L;
     private static final String fileName = "santas.json";
+    private String channelId;
     private Map<String, Santa> santas;
     private Map<String, String> selectedPairs;
     private Map<String, ArrayList<String>> blacklistedPairs;
@@ -23,6 +24,7 @@ public class SantaManager implements Serializable {
         selectedPairs = new HashMap<>();
         blacklistedPairs = new HashMap<>();
         gameStarted = false;
+        channelId = DiscordID.SECRET_SANTA;
     }
 
     public boolean add(Santa santa) {
@@ -71,6 +73,10 @@ public class SantaManager implements Serializable {
 
     public boolean started() {
         return this.gameStarted;
+    }
+
+    public String getChannelId() {
+        return this.channelId;
     }
 
     public void start() {
