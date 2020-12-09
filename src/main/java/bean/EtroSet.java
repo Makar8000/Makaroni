@@ -16,16 +16,16 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-public class AriyalaSet {
-    private String ariyalaId;
+public class EtroSet {
+    private String etroId;
     private String job;
     private int dustings;
     private int twines;
     private boolean ester;
     private ArrayList<String> raidPieces;
 
-    public AriyalaSet(String ariyalaId) {
-        this.ariyalaId = ariyalaId;
+    public EtroSet(String etroId) {
+        this.etroId = etroId;
         this.job = "";
         dustings = 0;
         twines = 0;
@@ -33,8 +33,8 @@ public class AriyalaSet {
         this.raidPieces = new ArrayList<>();
     }
 
-    public String getAriyalaId() {
-        return ariyalaId;
+    public String getEtroId() {
+        return etroId;
     }
 
     public void setJob(String job) {
@@ -49,7 +49,7 @@ public class AriyalaSet {
         return dustings;
     }
 
-    public int addCoating() {
+    public int addDusting() {
         return ++dustings;
     }
 
@@ -89,8 +89,8 @@ public class AriyalaSet {
 
     public MessageEmbed getMessage() {
         EmbedBuilder msg = new EmbedBuilder();
-        msg.setColor(new Color(162, 132, 224));
-        msg.setAuthor("Ariyala Data", ariyalaUrl + this.getAriyalaId(), iconUrl + this.getJob() + "_Solid.png");
+        msg.setColor(new Color(180, 96, 166));
+        msg.setAuthor("Etro Data", etroUrl + this.getEtroId(), iconUrl + this.getJob() + "_Solid.png");
         if (this.getDustings() > 0)
             msg.addField("Dusting(s)", "" + this.getDustings(), true);
         if (this.getTwines() > 0)
@@ -103,26 +103,23 @@ public class AriyalaSet {
         return msg.build();
     }
 
-    public static AriyalaSet getFromId(String ariyalaId) {
-        AriyalaSet set = new AriyalaSet(ariyalaId);
+    public static EtroSet getFromId(String etroId) {
+        EtroSet set = new EtroSet(etroId);
 
         try {
-            /* Grab ariyala item list */
-            Request ariyalaRequest = new Request.Builder().url(ariyalaUrl + "store.app?identifier=" + ariyalaId).build();
-            Response ariyalaResponse = client.newCall(ariyalaRequest).execute();
-            JSONObject json = new JSONObject(ariyalaResponse.body().string());
-            String job = json.getString("content");
+            /* Grab etro item list */
+            Request etroRequest = new Request.Builder().url(etroApiUrl + etroId).build();
+            Response etroResponse = client.newCall(etroRequest).execute();
+            JSONObject gearSet = new JSONObject(etroResponse.body().string());
+            String job = gearSet.getString("jobAbbrev");
             set.setJob(job);
 
             /* Iterate through item list */
-            JSONObject gearSet = json.getJSONObject("datasets").getJSONObject(job).getJSONObject("normal").getJSONObject("items");
-            Iterator<String> keys = gearSet.keys();
+            Iterator<String> keys = augmentTokens.keySet().iterator();
             while (keys.hasNext()) {
                 /* Determine current gear slot */
                 String slot = keys.next();
                 String augType = augmentTokens.get(slot);
-                if (augType == null)
-                    continue;
 
                 /* Grab XIVAPI item data */
                 int itemId = gearSet.getInt(slot);
@@ -134,16 +131,14 @@ public class AriyalaSet {
                 /* Determine upgrade item if the item is augmented */
                 if (itemName.startsWith("Augmented")) {
                     if (augType.equals("dusting"))
-                        set.addCoating();
+                        set.addDusting();
                     if (augType.equals("twine"))
                         set.addTwine();
                     if (augType.equals("ester"))
                         set.setEster(true);
                 } else {
-                    if (slot.startsWith("ring"))
+                    if (slot.startsWith("finger"))
                         slot = "ring";
-                    if (slot.equals("mainhand"))
-                        slot = "weapon";
                     set.addRaidPiece(slot);
                 }
             }
@@ -155,24 +150,25 @@ public class AriyalaSet {
     }
 
     private static final OkHttpClient client = new OkHttpClient();
-    private static final String ariyalaUrl = "http://ffxiv.ariyala.com/";
+    private static final String etroApiUrl = "http://etro.gg/api/gearsets/";
+    private static final String etroUrl = "https://etro.gg/gearset/";
     private static final String apiUrl = "http://xivapi.com";
     private static final String thumbnailUrl = "https://i.imgur.com/PXL66Ix.png";
     private static final String iconUrl = "https://raw.githubusercontent.com/anoyetta/ACT.Hojoring/master/source/ACT.SpecialSpellTimer/ACT.SpecialSpellTimer.Core/resources/icon/Job/";
     private static final Map<String, String> augmentTokens = new HashMap<String, String>() {
         {
-            put("mainhand", "ester");
+            put("weapon", "ester");
             put("head", "twine");
-            put("chest", "twine");
+            put("body", "twine");
             put("hands", "twine");
             put("waist", "dusting");
             put("legs", "twine");
             put("feet", "twine");
             put("ears", "dusting");
             put("neck", "dusting");
-            put("wrist", "dusting");
-            put("ringLeft", "dusting");
-            put("ringRight", "dusting");
+            put("wrists", "dusting");
+            put("fingerL", "dusting");
+            put("fingerR", "dusting");
         }
     };
 }
