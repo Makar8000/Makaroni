@@ -31,7 +31,7 @@ public class FFXIVFetcher {
                         .addHeader("Accept-Encoding", "gzip, deflate")
                         .addHeader("Accept-Language", "en-US,en;q=0.8,ja;q=0.6,de-DE;q=0.4,de;q=0.2")
                         .addHeader("Origin", "https://launcher.finalfantasyxiv.com")
-                        .addHeader("Referer", "https://frontier.ffxiv.com/version_5_0_win/index.html?rc_lang=en-gb&time=" + sdf.format(new Date()))
+                        .addHeader("Referer", "https://launcher.finalfantasyxiv.com/v600/index.html?rc_lang=en-gb&time=" + sdf.format(new Date()))
                         .build();
                 Response resp = client.newCall(req).execute();
 
