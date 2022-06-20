@@ -73,6 +73,7 @@ public class AdminCommandListener extends ListenerAdapter {
         addDynamicCommand();
         addDeleteAllCommand();
         addFFXIVMaintNotifyCommand();
+        addFFXIVPatchNotifyCommand();
     }
 
     private PrivateAction addDeleteAllCommand() {
@@ -137,8 +138,53 @@ public class AdminCommandListener extends ListenerAdapter {
             }
 
             public void run(PrivateMessageReceivedEvent event) {
-                FFXIVNotification.start(event.getChannel());
-                event.getAuthor().openPrivateChannel().complete().sendMessage("Added to queue.").queue();
+                String[] command = event.getMessage().getContentRaw().split(" ", 3);
+                if (command.length == 3) {
+                    if (command[1].equalsIgnoreCase("delay")) {
+                        if (FFXIVNotification.setDelayMaint(command[2]))
+                            event.getAuthor().openPrivateChannel().complete().sendMessage(String.format("Set delay to %s", command[2])).queue();
+                        else
+                            event.getAuthor().openPrivateChannel().complete().sendMessage("Invalid long").queue();
+                    }
+                } else {
+                    if (FFXIVNotification.startMaint(event.getChannel(), event.getAuthor().getId())) {
+                        event.getAuthor().openPrivateChannel().complete().sendMessage("Added to maintenance notify queue.").queue();
+                    } else if (FFXIVNotification.stopMaint(event.getAuthor().getId())) {
+                        event.getAuthor().openPrivateChannel().complete().sendMessage("Removed from maintenance notify queue.").queue();
+                    } else {
+                        event.getAuthor().openPrivateChannel().complete().sendMessage("Something went wrong.").queue();
+                    }
+                }
+            }
+        };
+        privateCommands.put(Constants.PREFIX + action.getCommand(), action);
+        return action;
+    }
+
+    private PrivateAction addFFXIVPatchNotifyCommand() {
+        PrivateAction action = new PrivateAction() {
+            public String getCommand() {
+                return "ffxivpatch";
+            }
+
+            public void run(PrivateMessageReceivedEvent event) {
+                String[] command = event.getMessage().getContentRaw().split(" ", 3);
+                if (command.length == 3) {
+                    if (command[1].equalsIgnoreCase("delay")) {
+                        if (FFXIVNotification.setDelayPatch(command[2]))
+                            event.getAuthor().openPrivateChannel().complete().sendMessage(String.format("Set delay to %s", command[2])).queue();
+                        else
+                            event.getAuthor().openPrivateChannel().complete().sendMessage("Invalid long").queue();
+                    }
+                } else {
+                    if (FFXIVNotification.startPatch(event.getChannel(), event.getAuthor().getId())) {
+                        event.getAuthor().openPrivateChannel().complete().sendMessage("Added to patch notify queue.").queue();
+                    } else if (FFXIVNotification.stopPatch(event.getAuthor().getId())) {
+                        event.getAuthor().openPrivateChannel().complete().sendMessage("Removed from patch notify queue.").queue();
+                    } else {
+                        event.getAuthor().openPrivateChannel().complete().sendMessage("Something went wrong.").queue();
+                    }
+                }
             }
         };
         privateCommands.put(Constants.PREFIX + action.getCommand(), action);
