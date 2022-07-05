@@ -1,6 +1,7 @@
 package news;
 
-import net.dv8tion.jda.api.entities.PrivateChannel;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageChannel;
 import okhttp3.*;
 import utils.TokenManager;
 
@@ -26,25 +27,29 @@ public class FFXIVFetcher {
     private static final String OAUTH_TOP_URL = "https://ffxiv-login.square-enix.com/oauth/ffxivarr/login/top?lng=en&rgn=3&isft=0&cssmode=1&isnew=1&launchver=3";
     // When checking for future patches, this needs to be updated to be current values
     private static final String[] VER_INFO = {
-            "2022.05.27.0000.0000", // Base ffxivgame.ver
+            "2022.06.21.0000.0000", // Base ffxivgame.ver
             "2022.05.26.0000.0000", // HW   ex1.ver
             "2022.05.26.0000.0000", // SB   ex2.ver
             "2022.05.26.0000.0000", // ShB  ex3.ver
             "2022.05.27.0000.0000"  // EW   ex4.ver
     };
-    // Until a proper way is implemented, get this from https://github.com/goatcorp/FFXIVQuickLauncher/blob/6.2.40/src/XIVLauncher.Common/Game/Launcher.cs#L271
+    // Until a proper way is implemented, get this from https://github.com/goatcorp/FFXIVQuickLauncher/blob/6.2.43/src/XIVLauncher.Common/Game/Launcher.cs#L271
     // It is a hash of "ffxivboot.exe", "ffxivboot64.exe", "ffxivlauncher.exe", "ffxivlauncher64.exe", "ffxivupdater.exe", "ffxivupdater64.exe"
     // This means it shouldn't need an update unless there is an update to these files
     private static final String BOOT_VER_HASH = "2022.03.25.0000.0001=ffxivboot.exe/1030040/82ea9c341751c6cef6454f342c42211c32edbeb5,ffxivboot64.exe/1250200/18fdc2e05715c66f12bd00030c9ecf8def3582cb,ffxivlauncher.exe/10042776/6643c7d565bbe54255c17bf243eab36aea17f2d3,ffxivlauncher64.exe/10128280/439c921b4d1eee911e1cd0150b6a2ae5bf21853d,ffxivupdater.exe/1061272/b093ef36524fd273c956986213d14a0af0dcc432,ffxivupdater64.exe/1294744/966754f32e429e3010f4916ba42a86f76cf0d6ee";
     private static final String VER_REPORT = String.format("%s\nex1\t%s\nex2\t%s\nex3\t%s\nex4\t%s", BOOT_VER_HASH, VER_INFO[1], VER_INFO[2], VER_INFO[3], VER_INFO[4]);
     private static String userAgent = "";
 
-    public static void checkNewPatch(PrivateChannel channel) {
+    public static void checkNewPatch(MessageChannel channel) {
         String[] xivLogin = TokenManager.getXIVLogin();
         if (xivLogin[0].isEmpty() || xivLogin[1].isEmpty()) {
             channel.sendMessage(FFXIVNotification.getMessage("FFXIV Notifications", "Invalid token in file.")).queue();
             return;
         }
+
+        final String msgTitle = "FFXIV Patch Status";
+        Message retryMessage = null;
+        int retryCount = 0;
 
         while (!Thread.currentThread().isInterrupted()) {
             try {
@@ -67,19 +72,35 @@ public class FFXIVFetcher {
                     patchList = registerSession(sessionId);
 
                 if (patchList != null && !patchList.isEmpty()) {
-                    channel.sendMessage(FFXIVNotification.getMessage("FFXIV Patch Status", String.format("New patches available! %s", patchList))).queue();
+                    System.out.println(patchList);
+                    channel.sendMessage(FFXIVNotification.getMessage(msgTitle, String.format("New patches available! %s", patchList))).queue();
                     return;
+                }
+
+                if (patchList == null) {
+                    String retryStr = "An issue occured checking for patch updates. Retrying... %s";
+                    if (retryMessage == null)
+                        retryMessage = channel.sendMessage(FFXIVNotification.getMessage(msgTitle, String.format(retryStr, " "))).complete();
+                    if (retryCount > 0)
+                        retryMessage.editMessage(FFXIVNotification.getMessage(msgTitle, String.format(retryStr, retryCount))).queue();
+                    retryCount++;
+                } else if (retryMessage != null) {
+                    retryMessage.delete().queue();
+                    retryMessage = null;
+                    retryCount = 0;
                 }
 
                 Thread.sleep(REQUEST_DELAY_PATCH + rand.nextInt(REQUEST_DELAY_VARIANCE));
             } catch (InterruptedException ex) {
                 Thread.currentThread().interrupt();
                 return;
+            } catch (Exception ex) {
+                channel.sendMessage(FFXIVNotification.getMessage(msgTitle, "An issue occured checking for patch updates. Maybe there is an update?")).queue();
             }
         }
     }
 
-    public static void checkMaintenance(PrivateChannel channel) {
+    public static void checkMaintenance(MessageChannel channel) {
         OkHttpClient client = new OkHttpClient();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm");
 
@@ -141,7 +162,7 @@ public class FFXIVFetcher {
             if (!resp.isSuccessful())
                 return null;
 
-            return resp.body().string();
+            return parsePatchList(resp.body().string());
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -242,5 +263,22 @@ public class FFXIVFetcher {
             hashtext.insert(0, "0");
 
         return hashtext.toString();
+    }
+
+    private static String parsePatchList(String body) {
+        try {
+            Pattern r = Pattern.compile("[\\.\\w]*?\\.patch");
+            Matcher m = r.matcher(body);
+            StringBuilder ret = new StringBuilder("\n");
+            while (m.find()) {
+                ret.append("\n");
+                ret.append(m.group());
+            }
+
+            return ret.toString();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return body;
+        }
     }
 }

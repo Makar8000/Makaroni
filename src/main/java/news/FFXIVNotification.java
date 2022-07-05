@@ -1,8 +1,8 @@
 package news;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.PrivateChannel;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -13,7 +13,7 @@ public class FFXIVNotification {
     private static final String KEY_MAINT = "M";
     private static final String KEY_PATCH = "P";
 
-    public static boolean startMaint(PrivateChannel channel, String id) {
+    public static boolean startMaint(MessageChannel channel, String id) {
         String key = id + KEY_MAINT;
         if (threadMap.containsKey(key))
             return false;
@@ -23,7 +23,7 @@ public class FFXIVNotification {
         return true;
     }
 
-    public static boolean startPatch(PrivateChannel channel, String id) {
+    public static boolean startPatch(MessageChannel channel, String id) {
         String key = id + KEY_PATCH;
         if (threadMap.containsKey(key))
             return false;
