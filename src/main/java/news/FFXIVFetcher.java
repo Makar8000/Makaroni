@@ -21,13 +21,13 @@ public class FFXIVFetcher {
     public static long REQUEST_DELAY_PATCH = 8000;
     public static long REQUEST_DELAY_MAINT = 8000;
 
-    // https://github.com/goatcorp/FFXIVQuickLauncher/blob/6.2.40/src/XIVLauncher.Common/Constants.cs#L21
+    // https://github.com/goatcorp/FFXIVQuickLauncher/blob/6.2.43/src/XIVLauncher.Common/Constants.cs#L21
     private static final String PATCHER_USER_AGENT = "FFXIV PATCH CLIENT";
     private static final String REFERER_LAUNCHER = "https://launcher.finalfantasyxiv.com/v610/index.html?rc_lang=en-us&time=";
     private static final String OAUTH_TOP_URL = "https://ffxiv-login.square-enix.com/oauth/ffxivarr/login/top?lng=en&rgn=3&isft=0&cssmode=1&isnew=1&launchver=3";
     // When checking for future patches, this needs to be updated to be current values
     private static final String[] VER_INFO = {
-            "2022.06.21.0000.0000", // Base ffxivgame.ver
+            "2022.07.08.0000.0000", // Base ffxivgame.ver
             "2022.05.26.0000.0000", // HW   ex1.ver
             "2022.05.26.0000.0000", // SB   ex2.ver
             "2022.05.26.0000.0000", // ShB  ex3.ver
