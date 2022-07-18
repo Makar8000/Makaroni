@@ -5,10 +5,8 @@ import net.dv8tion.jda.api.entities.MessageChannel;
 import okhttp3.*;
 import utils.TokenManager;
 
-import java.math.BigInteger;
 import java.net.InetAddress;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
@@ -23,7 +21,9 @@ public class FFXIVFetcher {
 
     // https://github.com/goatcorp/FFXIVQuickLauncher/blob/6.2.43/src/XIVLauncher.Common/Constants.cs#L21
     private static final String PATCHER_USER_AGENT = "FFXIV PATCH CLIENT";
+    // https://github.com/goatcorp/FFXIVQuickLauncher/blob/6.2.43/src/XIVLauncher.Common/Game/Launcher.cs#L673
     private static final String REFERER_LAUNCHER = "https://launcher.finalfantasyxiv.com/v610/index.html?rc_lang=en-us&time=";
+    // https://github.com/goatcorp/FFXIVQuickLauncher/blob/6.2.43/src/XIVLauncher.Common/Game/Launcher.cs#L510
     private static final String OAUTH_TOP_URL = "https://ffxiv-login.square-enix.com/oauth/ffxivarr/login/top?lng=en&rgn=3&isft=0&cssmode=1&isnew=1&launchver=3";
     // When checking for future patches, this needs to be updated to be current values
     private static final String[] VER_INFO = {
@@ -250,19 +250,16 @@ public class FFXIVFetcher {
         String userName = System.getProperty("user.name");
         String osVer = System.getProperty("os.name");
         String processorCount = "" + Runtime.getRuntime().availableProcessors();
-        return sha1(machineName + userName + osVer + processorCount);
-    }
+        String hashText = machineName + userName + osVer + processorCount;
 
-    private static String sha1(String str) throws NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("SHA-1");
-        byte[] messageDigest = md.digest(str.getBytes());
-        BigInteger no = new BigInteger(1, messageDigest);
-        StringBuilder hashtext = new StringBuilder(no.toString(16));
+        byte[] bytes = md.digest(hashText.getBytes());
+        bytes[0] = (byte) -(bytes[1] + bytes[2] + bytes[3] + bytes[4]);
 
-        while (hashtext.length() < 32)
-            hashtext.insert(0, "0");
-
-        return hashtext.toString();
+        StringBuilder hex = new StringBuilder();
+        for (int i = 0; i < 5; i++)
+            hex.append(String.format("%02X", bytes[i]));
+        return hex.toString().toLowerCase();
     }
 
     private static String parsePatchList(String body) {
