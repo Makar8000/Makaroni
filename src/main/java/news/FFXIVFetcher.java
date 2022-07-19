@@ -19,11 +19,9 @@ public class FFXIVFetcher {
     public static long REQUEST_DELAY_PATCH = 8000;
     public static long REQUEST_DELAY_MAINT = 8000;
 
-    // https://github.com/goatcorp/FFXIVQuickLauncher/blob/6.2.43/src/XIVLauncher.Common/Constants.cs#L21
+    // Most of this logic is thanks to / taken from the custom launcher code
     private static final String PATCHER_USER_AGENT = "FFXIV PATCH CLIENT";
-    // https://github.com/goatcorp/FFXIVQuickLauncher/blob/6.2.43/src/XIVLauncher.Common/Game/Launcher.cs#L673
     private static final String REFERER_LAUNCHER = "https://launcher.finalfantasyxiv.com/v610/index.html?rc_lang=en-us&time=";
-    // https://github.com/goatcorp/FFXIVQuickLauncher/blob/6.2.43/src/XIVLauncher.Common/Game/Launcher.cs#L510
     private static final String OAUTH_TOP_URL = "https://ffxiv-login.square-enix.com/oauth/ffxivarr/login/top?lng=en&rgn=3&isft=0&cssmode=1&isnew=1&launchver=3";
     // When checking for future patches, this needs to be updated to be current values
     private static final String[] VER_INFO = {
@@ -33,8 +31,7 @@ public class FFXIVFetcher {
             "2022.05.26.0000.0000", // ShB  ex3.ver
             "2022.05.27.0000.0000"  // EW   ex4.ver
     };
-    // Until a proper way is implemented, get this from https://github.com/goatcorp/FFXIVQuickLauncher/blob/6.2.43/src/XIVLauncher.Common/Game/Launcher.cs#L271
-    // It is a hash of "ffxivboot.exe", "ffxivboot64.exe", "ffxivlauncher.exe", "ffxivlauncher64.exe", "ffxivupdater.exe", "ffxivupdater64.exe"
+    // The following is a hash of "ffxivboot.exe", "ffxivboot64.exe", "ffxivlauncher.exe", "ffxivlauncher64.exe", "ffxivupdater.exe", "ffxivupdater64.exe"
     // This means it shouldn't need an update unless there is an update to these files
     private static final String BOOT_VER_HASH = "2022.03.25.0000.0001=ffxivboot.exe/1030040/82ea9c341751c6cef6454f342c42211c32edbeb5,ffxivboot64.exe/1250200/18fdc2e05715c66f12bd00030c9ecf8def3582cb,ffxivlauncher.exe/10042776/6643c7d565bbe54255c17bf243eab36aea17f2d3,ffxivlauncher64.exe/10128280/439c921b4d1eee911e1cd0150b6a2ae5bf21853d,ffxivupdater.exe/1061272/b093ef36524fd273c956986213d14a0af0dcc432,ffxivupdater64.exe/1294744/966754f32e429e3010f4916ba42a86f76cf0d6ee";
     private static final String VER_REPORT = String.format("%s\nex1\t%s\nex2\t%s\nex3\t%s\nex4\t%s", BOOT_VER_HASH, VER_INFO[1], VER_INFO[2], VER_INFO[3], VER_INFO[4]);
