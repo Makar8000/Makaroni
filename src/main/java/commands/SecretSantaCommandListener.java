@@ -39,6 +39,7 @@ public class SecretSantaCommandListener extends ListenerAdapter {
         addSantaAddCommand();
         addSantaRemoveCommand();
         addSantaParticipantsCommand();
+        addSantaBlacklistsCommand();
         addSantaGoCommand();
         addSantaStopCommand();
         addSantaSendSCommand();
@@ -138,6 +139,39 @@ public class SecretSantaCommandListener extends ListenerAdapter {
                 str.append("Current secret santa participants are:\n\n");
                 santas.getAll().forEach(santa -> {
                     str.append(event.getJDA().getUserById(santa.getDiscordID()).getName());
+                    str.append('\n');
+                });
+
+                event.getChannel().sendMessage(str.toString()).queue();
+            }
+        };
+        commands.put(Constants.PREFIX + action.getCommand(), action);
+        return action;
+    }
+
+    private PrivateAction addSantaBlacklistsCommand() {
+        PrivateAction action = new PrivateAction() {
+            public String getCommand() {
+                return "santablacklists";
+            }
+
+            public void run(PrivateMessageReceivedEvent event) {
+                if (!event.getAuthor().getId().equals(DiscordID.ADMIN))
+                    return;
+
+                StringBuilder str = new StringBuilder();
+
+                str.append("Current secret santa blacklists are:\n\nSanta Name - Banned Receivers\n");
+                Map<String, ArrayList<String>> blacklists = santas.getBlacklists();
+                blacklists.keySet().forEach(santaId -> {
+                    str.append("<@");
+                    str.append(santaId);
+                    str.append("> -");
+                    blacklists.get(santaId).forEach(receiverId -> {
+                        str.append(" <@");
+                        str.append(receiverId);
+                        str.append('>');
+                    });
                     str.append('\n');
                 });
 

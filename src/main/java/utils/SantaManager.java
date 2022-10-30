@@ -100,6 +100,10 @@ public class SantaManager implements Serializable {
         return ret;
     }
 
+    public Map<String, ArrayList<String>> getBlacklists() {
+        return blacklistedPairs;
+    }
+
     public String toString() {
         StringBuilder str = new StringBuilder();
 
