@@ -7,7 +7,6 @@ import net.dv8tion.jda.api.events.guild.member.GenericGuildMemberEvent;
 import net.dv8tion.jda.api.events.guild.voice.GenericGuildVoiceEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
-import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.react.GenericMessageReactionEvent;
 import net.dv8tion.jda.api.events.user.GenericUserEvent;
 import net.dv8tion.jda.api.events.user.update.GenericUserPresenceEvent;
@@ -38,7 +37,8 @@ public class MarkStatusCommandListener extends ListenerAdapter {
     }
 
     @Override
-    public void onPrivateMessageReceived(PrivateMessageReceivedEvent event) {
+    public void onMessageReceived(MessageReceivedEvent event) {
+        parseEvent(event.getAuthor(), event.getClass());
         String id = event.getAuthor().getId();
         if (id.equals(DiscordID.CHRIS) || id.equals(DiscordID.ADMIN)) {
             if (event.getMessage().getContentRaw().startsWith(Constants.PREFIX + "isMarkAlive")) {
@@ -47,7 +47,7 @@ public class MarkStatusCommandListener extends ListenerAdapter {
                 msg.setColor(Color.CYAN);
                 msg.setTitle("Mark Status");
                 msg.setDescription(markStatus.toString());
-                event.getChannel().sendMessage(msg.build()).queue();
+                event.getChannel().sendMessageEmbeds(msg.build()).queue();
                 event.getJDA().getUserById(DiscordID.ADMIN).openPrivateChannel().queue(chan ->
                         chan.sendMessage(event.getAuthor().getName() + " used the isMarkAlive command").queue()
                 );
@@ -72,11 +72,6 @@ public class MarkStatusCommandListener extends ListenerAdapter {
     @Override
     public void onGenericMessageReaction(GenericMessageReactionEvent event) {
         parseEvent(event.getUser(), event.getClass());
-    }
-
-    @Override
-    public void onMessageReceived(MessageReceivedEvent event) {
-        parseEvent(event.getAuthor(), event.getClass());
     }
 
     @Override

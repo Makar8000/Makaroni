@@ -4,11 +4,10 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.events.ReconnectedEvent;
-import net.dv8tion.jda.api.events.ResumedEvent;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.session.SessionRecreateEvent;
+import net.dv8tion.jda.api.events.session.SessionResumeEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import utils.Constants;
 import utils.DiscordID;
@@ -21,17 +20,15 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class AdminCommandListener extends ListenerAdapter {
-    private final Map<String, GuildAction> commands;
-    private final Map<String, PrivateAction> privateCommands;
+    private final Map<String, MessageAction> commands;
 
     public AdminCommandListener() {
         commands = new HashMap<>();
-        privateCommands = new HashMap<>();
         addCommands();
     }
 
     @Override
-    public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
+    public void onMessageReceived(MessageReceivedEvent event) {
         if (!event.getAuthor().getId().equals(DiscordID.ADMIN))
             return;
         String command = event.getMessage().getContentRaw().split(" ", 2)[0].toLowerCase();
@@ -40,21 +37,12 @@ public class AdminCommandListener extends ListenerAdapter {
     }
 
     @Override
-    public void onPrivateMessageReceived(PrivateMessageReceivedEvent event) {
-        if (!event.getAuthor().getId().equals(DiscordID.ADMIN))
-            return;
-        String command = event.getMessage().getContentRaw().split(" ", 2)[0].toLowerCase();
-        if (privateCommands.containsKey(command))
-            privateCommands.get(command).run(event);
-    }
-
-    @Override
-    public void onResume(ResumedEvent event) {
+    public void onSessionResume(SessionResumeEvent event) {
         setGame(event.getJDA(), Constants.DEFAULT_GAME);
     }
 
     @Override
-    public void onReconnect(ReconnectedEvent event) {
+    public void onSessionRecreate(SessionRecreateEvent event) {
         setGame(event.getJDA(), Constants.DEFAULT_GAME);
     }
 
@@ -65,7 +53,6 @@ public class AdminCommandListener extends ListenerAdapter {
     private void addCommands() {
         addSetGameCommand();
         addShutdownCommand();
-        addPrivateShutdownCommand();
         addDeleteCommand();
         addEvalCommand();
         addRemoveCommand();
@@ -73,35 +60,35 @@ public class AdminCommandListener extends ListenerAdapter {
         addDeleteAllCommand();
     }
 
-    private PrivateAction addDeleteAllCommand() {
-        PrivateAction action = new PrivateAction() {
+    private MessageAction addDeleteAllCommand() {
+        MessageAction action = new MessageAction() {
             public String getCommand() {
                 return "deleteall";
             }
 
-            public void run(PrivateMessageReceivedEvent event) {
+            public void run(MessageReceivedEvent event) {
                 String[] command = event.getMessage().getContentRaw().split(" ", 2);
                 if (command.length != 2)
                     return;
 
-                TextChannel chan = event.getJDA().getTextChannelById(command[1]);
+                MessageChannel chan = event.getJDA().getTextChannelById(command[1]);
                 for (Message message : chan.getIterableHistory().stream()
                         .filter(m -> !m.isPinned())
                         .collect(Collectors.toList()))
                     message.delete().queue();
             }
         };
-        privateCommands.put(Constants.PREFIX + action.getCommand(), action);
+        commands.put(Constants.PREFIX + action.getCommand(), action);
         return action;
     }
 
-    private PrivateAction addSetGameCommand() {
-        PrivateAction action = new PrivateAction() {
+    private MessageAction addSetGameCommand() {
+        MessageAction action = new MessageAction() {
             public String getCommand() {
                 return "setgame";
             }
 
-            public void run(PrivateMessageReceivedEvent event) {
+            public void run(MessageReceivedEvent event) {
                 String[] command = event.getMessage().getContentRaw().split(" ", 2);
                 if (command.length != 2)
                     return;
@@ -109,33 +96,18 @@ public class AdminCommandListener extends ListenerAdapter {
                 setGame(event.getJDA(), command[1]);
             }
         };
-        privateCommands.put(Constants.PREFIX + action.getCommand(), action);
+        commands.put(Constants.PREFIX + action.getCommand(), action);
         return action;
     }
 
-    private PrivateAction addPrivateShutdownCommand() {
-        PrivateAction action = new PrivateAction() {
+    private MessageAction addShutdownCommand() {
+        MessageAction action = new MessageAction() {
             public String getCommand() {
                 return "shutdown";
             }
 
-            public void run(PrivateMessageReceivedEvent event) {
-                event.getJDA().shutdown();
-                System.exit(0);
-            }
-        };
-        privateCommands.put(Constants.PREFIX + action.getCommand(), action);
-        return action;
-    }
-
-    private GuildAction addShutdownCommand() {
-        GuildAction action = new GuildAction() {
-            public String getCommand() {
-                return "shutdown";
-            }
-
-            public void run(GuildMessageReceivedEvent event) {
-                event.getJDA().shutdown();
+            public void run(MessageReceivedEvent event) {
+                event.getJDA().shutdownNow();
                 System.exit(0);
             }
         };
@@ -143,19 +115,19 @@ public class AdminCommandListener extends ListenerAdapter {
         return action;
     }
 
-    private GuildAction addDeleteCommand() {
-        GuildAction action = new GuildAction() {
+    private MessageAction addDeleteCommand() {
+        MessageAction action = new MessageAction() {
             public String getCommand() {
                 return "deletemsg";
             }
 
-            public void run(GuildMessageReceivedEvent event) {
+            public void run(MessageReceivedEvent event) {
                 String[] command = event.getMessage().getContentRaw().split(" ", 4);
                 if (command.length == 4) {
                     String strChan = command[1];
                     String strFrom = command[2];
                     String strTo = command[3];
-                    TextChannel chan = event.getGuild().getTextChannelById(strChan);
+                    MessageChannel chan = event.getGuild().getTextChannelById(strChan);
                     Message start = chan.retrieveMessageById(strFrom).complete();
                     Message end = chan.retrieveMessageById(strTo).complete();
                     for (Message message : chan.getIterableHistory()) {
@@ -171,13 +143,13 @@ public class AdminCommandListener extends ListenerAdapter {
         return action;
     }
 
-    private GuildAction addEvalCommand() {
-        GuildAction action = new GuildAction() {
+    private MessageAction addEvalCommand() {
+        MessageAction action = new MessageAction() {
             public String getCommand() {
                 return "eval";
             }
 
-            public void run(GuildMessageReceivedEvent event) {
+            public void run(MessageReceivedEvent event) {
                 String[] command = event.getMessage().getContentRaw().split(" ", 2);
                 if (command.length != 2)
                     return;
@@ -204,20 +176,20 @@ public class AdminCommandListener extends ListenerAdapter {
 
                 output += "```";
                 msg.addField("Output", output, false);
-                event.getChannel().sendMessage(msg.build()).queue();
+                event.getChannel().sendMessageEmbeds(msg.build()).queue();
             }
         };
         commands.put(Constants.PREFIX + action.getCommand(), action);
         return action;
     }
 
-    private GuildAction addRemoveCommand() {
-        GuildAction action = new GuildAction() {
+    private MessageAction addRemoveCommand() {
+        MessageAction action = new MessageAction() {
             public String getCommand() {
                 return "rem";
             }
 
-            public void run(GuildMessageReceivedEvent event) {
+            public void run(MessageReceivedEvent event) {
                 String[] command = event.getMessage().getContentRaw().split(" ", 2);
                 if (command.length == 2)
                     commands.remove(command[1]);
@@ -227,16 +199,16 @@ public class AdminCommandListener extends ListenerAdapter {
         return action;
     }
 
-    private GuildAction addDynamicCommand() {
-        GuildAction action = new GuildAction() {
+    private MessageAction addDynamicCommand() {
+        MessageAction action = new MessageAction() {
             public String getCommand() {
                 return "add";
             }
 
-            public void run(GuildMessageReceivedEvent event) {
+            public void run(MessageReceivedEvent event) {
                 String[] command = event.getMessage().getContentRaw().split(" ", 3);
                 if (command.length == 3) {
-                    GuildAction newCommand = newDynamicCommand(command[1], command[2]);
+                    MessageAction newCommand = newDynamicCommand(command[1], command[2]);
                     commands.put(newCommand.getCommand(), newCommand);
                 }
             }
@@ -245,13 +217,13 @@ public class AdminCommandListener extends ListenerAdapter {
         return action;
     }
 
-    private GuildAction newDynamicCommand(String command, String response) {
-        return new GuildAction() {
+    private MessageAction newDynamicCommand(String command, String response) {
+        return new MessageAction() {
             public String getCommand() {
                 return Constants.PREFIX + command;
             }
 
-            public void run(GuildMessageReceivedEvent event) {
+            public void run(MessageReceivedEvent event) {
                 event.getChannel().sendMessage(response).queue();
             }
         };

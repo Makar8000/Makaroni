@@ -2,8 +2,8 @@ package bean;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 
 import java.awt.*;
 import java.text.SimpleDateFormat;
@@ -19,13 +19,13 @@ public class Reminder {
     private ScheduledExecutorService scheduler;
     private ScheduledFuture<?> scheduleHandle;
     private long epoch;
-    private TextChannel channel;
+    private MessageChannel channel;
     private User user;
     private String msg;
     private boolean all;
     private String id;
 
-    public Reminder(long epoch, TextChannel channel, User user, String msg, String id) {
+    public Reminder(long epoch, MessageChannel channel, User user, String msg, String id) {
         scheduler = Executors.newScheduledThreadPool(1);
         this.epoch = epoch;
         this.channel = channel;
@@ -35,7 +35,7 @@ public class Reminder {
         this.id = id;
     }
 
-    public Reminder(long epoch, TextChannel channel, User user, String msg, String id, boolean all) {
+    public Reminder(long epoch, MessageChannel channel, User user, String msg, String id, boolean all) {
         scheduler = Executors.newScheduledThreadPool(1);
         this.epoch = epoch;
         this.channel = channel;

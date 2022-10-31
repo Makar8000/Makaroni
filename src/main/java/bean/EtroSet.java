@@ -91,12 +91,12 @@ public class EtroSet {
         EmbedBuilder msg = new EmbedBuilder();
         msg.setColor(new Color(180, 96, 166));
         msg.setAuthor("Etro Data", etroUrl + this.getEtroId(), iconUrl + this.getJob() + "_Solid.png");
-        if (this.getDustings() > 0)
-            msg.addField("Dusting(s)", "" + this.getDustings(), true);
         if (this.getTwines() > 0)
-            msg.addField("Twine(s)", "" + this.getTwines(), true);
+            msg.addField("Leftside Aug(s)", "" + this.getTwines(), true);
+        if (this.getDustings() > 0)
+            msg.addField("Rightside Aug(s)", "" + this.getDustings(), true);
         if (this.hasEster())
-            msg.addField("Ester", "1", true);
+            msg.addField("Weapon Aug", "1", true);
         msg.setTitle("Raid Pieces");
         msg.setThumbnail(thumbnailUrl);
         msg.setDescription(this.getRaidPieces());
@@ -153,7 +153,7 @@ public class EtroSet {
     private static final String etroApiUrl = "http://etro.gg/api/gearsets/";
     private static final String etroUrl = "https://etro.gg/gearset/";
     private static final String apiUrl = "http://xivapi.com";
-    private static final String thumbnailUrl = "https://i.imgur.com/PXL66Ix.png";
+    private static final String thumbnailUrl = "https://i.imgur.com/huoF8gA.png";
     private static final String iconUrl = "https://raw.githubusercontent.com/anoyetta/ACT.Hojoring/master/source/ACT.SpecialSpellTimer/ACT.SpecialSpellTimer.Core/resources/icon/Job/";
     private static final Map<String, String> augmentTokens = new HashMap<String, String>() {
         {
@@ -161,7 +161,6 @@ public class EtroSet {
             put("head", "twine");
             put("body", "twine");
             put("hands", "twine");
-            put("waist", "dusting");
             put("legs", "twine");
             put("feet", "twine");
             put("ears", "dusting");

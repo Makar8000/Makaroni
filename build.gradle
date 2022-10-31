@@ -11,14 +11,10 @@ compileJava.options.encoding = 'UTF-8'
 
 repositories {
   mavenCentral()
-  maven {
-    name 'm2-dv8tion'
-    url 'https://m2.dv8tion.net/releases'
-  }
 }
 
 dependencies {
-  implementation ('net.dv8tion:JDA:4.4.0_350') {
+  implementation ('net.dv8tion:JDA:5.0.0-alpha.22') {
     exclude module: 'opus-java'
   }
   implementation 'com.squareup.okhttp3:okhttp:4.2.2'

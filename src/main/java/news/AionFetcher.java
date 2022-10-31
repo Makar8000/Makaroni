@@ -1,6 +1,6 @@
 package news;
 
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -12,7 +12,7 @@ import java.util.LinkedList;
 
 
 public class AionFetcher {
-    public static void loopNews(TextChannel channel) {
+    public static void loopNews(MessageChannel channel) {
         AionCache<AionArticle> cache = loadAionArtCache();
         OkHttpClient client = new OkHttpClient();
 
@@ -44,7 +44,7 @@ public class AionFetcher {
                 }
 
                 while (!newArticles.isEmpty()) {
-                    channel.sendMessage(newArticles.removeLast().getMessage()).queue();
+                    channel.sendMessageEmbeds(newArticles.removeLast().getMessage()).queue();
                 }
             } catch (Exception ex) {
 

@@ -2,7 +2,7 @@ package commands;
 
 import bean.AriyalaSet;
 import bean.EtroSet;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import utils.Constants;
 
@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class XIVCommandListener extends ListenerAdapter {
-    private final Map<String, GuildAction> commands;
+    private final Map<String, MessageAction> commands;
 
     public XIVCommandListener() {
         commands = new HashMap<>();
@@ -18,7 +18,7 @@ public class XIVCommandListener extends ListenerAdapter {
     }
 
     @Override
-    public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
+    public void onMessageReceived(MessageReceivedEvent event) {
         String command = event.getMessage().getContentRaw().split(" ", 2)[0].toLowerCase();
         if (commands.containsKey(command))
             commands.get(command).run(event);
@@ -29,13 +29,13 @@ public class XIVCommandListener extends ListenerAdapter {
         addGetEtroLootCommand();
     }
 
-    private GuildAction addGetAriyalaLootCommand() {
-        GuildAction action = new GuildAction() {
+    private MessageAction addGetAriyalaLootCommand() {
+        MessageAction action = new MessageAction() {
             public String getCommand() {
                 return "alootbreakdown";
             }
 
-            public void run(GuildMessageReceivedEvent event) {
+            public void run(MessageReceivedEvent event) {
                 String[] command = event.getMessage().getContentRaw().split(" ", 2);
                 if (command.length != 2)
                     return;
@@ -56,12 +56,17 @@ public class XIVCommandListener extends ListenerAdapter {
 
                 event.getChannel().sendMessage("Grabbing ariyala data...").queue(msg -> {
                     AriyalaSet ariyalaSet = AriyalaSet.getFromId(ariyalaId);
-                    if (ariyalaSet == null)
+                    if (ariyalaSet == null) {
                         msg.editMessage("Network error!").queue();
+                        return;
+                    }
 
                     msg.delete().queue();
-                    event.getMessage().delete().queue();
-                    event.getChannel().sendMessage(ariyalaSet.getMessage()).queue();
+                    try {
+                        event.getMessage().delete().queue();
+                    } catch (IllegalStateException ex) {
+                    }
+                    event.getChannel().sendMessageEmbeds(ariyalaSet.getMessage()).queue();
                 });
             }
         };
@@ -69,13 +74,13 @@ public class XIVCommandListener extends ListenerAdapter {
         return action;
     }
 
-    private GuildAction addGetEtroLootCommand() {
-        GuildAction action = new GuildAction() {
+    private MessageAction addGetEtroLootCommand() {
+        MessageAction action = new MessageAction() {
             public String getCommand() {
                 return "elootbreakdown";
             }
 
-            public void run(GuildMessageReceivedEvent event) {
+            public void run(MessageReceivedEvent event) {
                 String[] command = event.getMessage().getContentRaw().split(" ", 2);
                 if (command.length != 2)
                     return;
@@ -96,12 +101,17 @@ public class XIVCommandListener extends ListenerAdapter {
 
                 event.getChannel().sendMessage("Grabbing etro data...").queue(msg -> {
                     EtroSet etroSet = EtroSet.getFromId(etroId);
-                    if (etroSet == null)
+                    if (etroSet == null) {
                         msg.editMessage("Network error!").queue();
+                        return;
+                    }
 
                     msg.delete().queue();
-                    event.getMessage().delete().queue();
-                    event.getChannel().sendMessage(etroSet.getMessage()).queue();
+                    try {
+                        event.getMessage().delete().queue();
+                    } catch (IllegalStateException ex) {
+                    }
+                    event.getChannel().sendMessageEmbeds(etroSet.getMessage()).queue();
                 });
             }
         };
