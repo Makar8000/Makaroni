@@ -5,7 +5,7 @@ import utils.DiscordID;
 
 public class AionNotification {
     public static void start(JDA jda) {
-        Thread t1 = new Thread(() -> AionFetcher.loopNews(jda.getTextChannelById(DiscordID.GAMING)));
+        Thread t1 = new Thread(() -> AionFetcher.loopNews(jda.getTextChannelById(DiscordID.GENERAL)));
         t1.start();
     }
 }
